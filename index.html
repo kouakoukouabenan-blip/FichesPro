@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<meta name="theme-color" content="#1B3A6B">
+<title>FichesPro — Fiches de leçon</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --navy:#1B3A6B;--blue:#2563EB;--sky:#EFF6FF;
+  --green:#16A34A;--green-l:#DCFCE7;
+  --red:#DC2626;--red-l:#FEE2E2;
+  --purple:#6D28D9;--purple-l:#EDE9FE;
+  --bg:#F1F5FB;--surf:#fff;--text:#0F172A;--muted:#64748B;--subtle:#94A3B8;
+  --border:#E2E8F0;--r:12px;--rs:8px;
+  --sh:0 1px 8px rgba(15,23,42,.08);--sh-lg:0 8px 32px rgba(15,23,42,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-tap-highlight-color:transparent;font-size:15px}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* Pages */
+.page{display:none}
+.page.active{display:flex;flex-direction:column;min-height:100vh}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fi .2s ease}
+
+/* Topbar */
+.top{background:var(--navy);height:52px;display:flex;align-items:center;padding:0 14px;gap:8px;position:sticky;top:0;z-index:400;flex-shrink:0}
+.t-brand{display:flex;align-items:center;gap:8px}
+.t-ico{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,#3B82F6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.t-name{font-size:14px;font-weight:800;color:#fff}.t-name span{color:#93C5FD}
+.t-nav{display:flex;gap:2px;margin-left:auto}
+.tnb{background:none;border:none;padding:6px 9px;border-radius:var(--rs);color:rgba(255,255,255,.5);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.tnb:hover,.tnb.on{background:rgba(255,255,255,.12);color:#fff}
+@media(max-width:480px){.tnb-txt{display:none}.tnb{padding:6px 8px;font-size:15px}}
+
+/* ── HOME ── */
+.hero{background:linear-gradient(135deg,#1B3A6B 0%,#243f7a 60%,#1e3a6e 100%);padding:32px 16px 40px;position:relative;overflow:hidden;flex-shrink:0}
+.hero::before{content:'';position:absolute;top:-80px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(59,130,246,.14) 0%,transparent 70%);pointer-events:none}
+.hi{max-width:680px;margin:0 auto;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(59,130,246,.2);border:1px solid rgba(93,159,247,.35);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:700;color:#93C5FD;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:12px}
+.hero-h1{font-size:clamp(20px,5vw,34px);font-weight:800;color:#fff;line-height:1.15;margin-bottom:8px}
+.hero-h1 em{color:#93C5FD;font-style:normal}
+.hero-sub{font-size:12.5px;color:rgba(255,255,255,.5);line-height:1.7;max-width:420px;margin-bottom:20px}
+.hero-btns{display:flex;gap:9px;flex-wrap:wrap}
+.btn-p{display:inline-flex;align-items:center;gap:6px;background:#2563EB;color:#fff;border:none;border-radius:var(--rs);padding:10px 18px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
+.btn-p:hover{background:#1d4ed8;transform:translateY(-1px)}
+.btn-s{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:var(--rs);padding:10px 16px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-s:hover{background:rgba(255,255,255,.18)}
+
+.home-body{padding:16px;flex:1;max-width:880px;width:100%;margin:0 auto}
+.sec-lbl{font-size:10px;font-weight:700;letter-spacing:2.2px;text-transform:uppercase;color:var(--subtle);margin-bottom:11px;margin-top:4px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.stat{background:var(--surf);border-radius:var(--r);border:1.5px solid var(--border);padding:12px 14px;box-shadow:var(--sh)}
+.stat-v{font-size:24px;font-weight:800;line-height:1}
+.stat-l{font-size:10px;color:var(--muted);margin-top:3px}
+@media(max-width:480px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+.rcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:20px}
+.fcard{background:var(--surf);border-radius:var(--r);border:1.5px solid var(--border);padding:14px;cursor:pointer;transition:.18s}
+.fcard:hover{transform:translateY(-2px);box-shadow:var(--sh-lg)}
+.fcard:active{transform:none}
+.fcard-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;margin-bottom:7px}
+.fcard-title{font-size:13px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:5px}
+.fcard-meta{font-size:11px;color:var(--muted);margin-bottom:8px}
+.fcard-foot{display:flex;align-items:center;justify-content:space-between}
+.fcard-cl{font-size:11px;font-weight:600;color:var(--muted)}
+.fcard-acts{display:flex;gap:3px}
+.fic-btn{background:none;border:none;cursor:pointer;font-size:13px;padding:3px 5px;border-radius:4px;transition:.1s;line-height:1}
+.fic-btn:hover{background:var(--bg)}
+.empty{text-align:center;padding:36px 16px;color:var(--subtle);background:var(--surf);border-radius:var(--r);border:1.5px dashed var(--border);grid-column:1/-1}
+.empty .big{font-size:34px;margin-bottom:10px}
+.empty p{font-size:13px;line-height:1.7}
+
+/* ── FORM ── */
+.fpage{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.finner{max-width:800px;margin:0 auto;padding:14px 14px 120px}
+.f-topbar{display:flex;align-items:center;gap:9px;margin-bottom:16px;flex-wrap:wrap}
+.back-btn{display:inline-flex;align-items:center;gap:5px;background:none;border:1.5px solid var(--border);border-radius:var(--rs);padding:7px 12px;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;transition:.15s}
+.back-btn:hover{border-color:var(--navy);color:var(--text)}
+.f-title{font-size:17px;font-weight:800}
+.f-sub{font-size:12px;color:var(--muted);margin-top:1px}
+
+/* Steps */
+.steps{display:flex;overflow-x:auto;gap:0;margin-bottom:18px;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:1px}
+.steps::-webkit-scrollbar{display:none}
+.stp{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--rs);font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:.15s;flex-shrink:0;white-space:nowrap}
+.stp.done{color:var(--green)}
+.stp.active{background:var(--sky);color:var(--blue);font-weight:700}
+.stp-n{width:20px;height:20px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.stp.done .stp-n{background:var(--green-l);color:var(--green)}
+.stp.active .stp-n{background:var(--blue);color:#fff}
+
+/* Cards */
+.card{background:var(--surf);border-radius:var(--r);border:1.5px solid var(--border);padding:16px;margin-bottom:14px;box-shadow:var(--sh)}
+.card-t{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.card-ico{font-size:16px}
+
+/* Fields */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+@media(max-width:540px){.g2,.g3{grid-template-columns:1fr}}
+.fld{margin-bottom:12px}.fld:last-child{margin-bottom:0}
+.fld label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase}
+.fld label .req{color:var(--red);margin-left:2px}
+input,select,textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--rs);padding:9px 11px;font-family:inherit;font-size:13px;color:var(--text);background:var(--surf);outline:none;transition:.15s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+input::placeholder,textarea::placeholder{color:var(--subtle)}
+textarea{resize:vertical;min-height:68px;line-height:1.6}
+
+/* Plan du cours rapide */
+.plan-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.plan-tag{padding:4px 10px;border-radius:20px;background:var(--bg);border:1.5px solid var(--border);font-size:11px;font-weight:600;cursor:pointer;transition:.12s;color:var(--muted)}
+.plan-tag:hover{border-color:var(--blue);color:var(--blue);background:var(--sky)}
+.plan-tag.sel{background:var(--sky);border-color:var(--blue);color:var(--blue)}
+
+/* AI Panel */
+.ai-panel{background:linear-gradient(135deg,#F5F3FF 0%,#EFF6FF 100%);border:1.5px solid #C4B5FD;border-radius:var(--rs);padding:13px;margin-bottom:12px}
+.ai-head{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.ai-ico{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0}
+.ai-label{font-size:12px;font-weight:700;color:#3730A3}
+.ai-sub{font-size:10px;color:#6366F1;margin-top:1px}
+.ai-desc-row{display:flex;gap:7px;margin-bottom:8px}
+.ai-desc-row input{flex:1;font-size:12px;padding:7px 10px;border-color:#C4B5FD;background:#fff}
+.ai-desc-row input:focus{border-color:#6366F1}
+.ai-desc-btn{padding:7px 13px;border-radius:var(--rs);border:none;background:#6366F1;color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.15s;flex-shrink:0}
+.ai-desc-btn:hover{background:#4F46E5}
+.ai-desc-btn:disabled{opacity:.5;cursor:not-allowed}
+.ai-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ai-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;border:1.5px solid #C4B5FD;background:#fff;font-family:inherit;font-size:11px;font-weight:600;color:#4338CA;cursor:pointer;transition:.12s}
+.ai-chip:hover{background:#EEF2FF;border-color:#818CF8}
+.ai-chip:disabled{opacity:.5;cursor:not-allowed}
+.ai-spin{display:none;align-items:center;gap:6px;font-size:11px;color:#6366F1;margin-top:7px}
+.ai-spin.on{display:flex}
+.spin{width:13px;height:13px;border:2px solid #C4B5FD;border-top-color:#6366F1;border-radius:50%;animation:sp .65s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ai-out{display:none;margin-top:9px;background:#fff;border-radius:var(--rs);border:1.5px solid #C4B5FD;padding:9px 11px;font-size:12px;color:var(--text);line-height:1.75;white-space:pre-wrap;max-height:220px;overflow-y:auto}
+.ai-out.on{display:block}
+.ai-apply{display:none;margin-top:6px}
+.ai-apply.on{display:flex}
+.ai-apply-btn{padding:5px 12px;border-radius:var(--rs);border:none;background:var(--green);color:#fff;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:.12s}
+.ai-apply-btn:hover{background:#15803d}
+
+/* Rows */
+.rows-wrap{margin-bottom:14px}
+.row-card{background:var(--bg);border-radius:var(--rs);border:1.5px solid var(--border);padding:12px;margin-bottom:10px}
+.row-hd{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.row-num{width:22px;height:22px;border-radius:5px;background:var(--navy);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.row-lbl{font-size:12px;font-weight:700;flex:1}
+.row-del{background:none;border:none;cursor:pointer;color:var(--subtle);font-size:15px;padding:2px 4px;border-radius:4px;transition:.12s;line-height:1}
+.row-del:hover{background:var(--red-l);color:var(--red)}
+.row-cols{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+@media(max-width:680px){.row-cols{grid-template-columns:1fr 1fr}}
+@media(max-width:400px){.row-cols{grid-template-columns:1fr}}
+.add-row{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px;border:1.5px dashed var(--border);border-radius:var(--rs);background:none;font-family:inherit;font-size:12px;color:var(--muted);cursor:pointer;transition:.12s;margin-top:2px}
+.add-row:hover{border-color:var(--blue);color:var(--blue);background:var(--sky)}
+
+/* Sticky save bar */
+.save-bar{position:fixed;bottom:0;left:0;right:0;background:var(--surf);border-top:1.5px solid var(--border);padding:10px 14px;display:flex;gap:8px;justify-content:flex-end;z-index:200;box-shadow:0 -4px 16px rgba(15,23,42,.09)}
+.btn-save{display:inline-flex;align-items:center;gap:5px;padding:10px 20px;border-radius:var(--rs);border:none;background:var(--blue);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
+.btn-save:hover{background:#1d4ed8}
+.btn-prev{display:inline-flex;align-items:center;gap:5px;padding:10px 15px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--surf);color:var(--text);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-prev:hover{border-color:var(--navy);background:var(--navy);color:#fff}
+
+/* Preview */
+.prev-wrap{padding:14px;flex:1;max-width:960px;width:100%;margin:0 auto;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.prev-top{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.prev-title{font-size:16px;font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-a{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;border:none;white-space:nowrap}
+.btn-pdf{background:var(--red);color:#fff}.btn-pdf:hover{background:#B91C1C}
+.btn-exp{flex:1;min-width:160px;padding:10px 14px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--surf);font-family:inherit;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:.15s;text-align:center}
+.btn-exp:hover{border-color:var(--navy);background:var(--navy);color:#fff}
+.btn-exp-s{background:var(--surf);color:var(--navy);border:1.5px solid var(--navy)}.btn-exp-s:hover{background:var(--navy);color:#fff}
+.btn-edit2{background:var(--surf);color:var(--text);border:1.5px solid var(--border)}.btn-edit2:hover{background:var(--bg)}
+
+/* Fiche rendered */
+#fiche-out{background:#fff;padding:18px;font-family:Arial,sans-serif;font-size:11px;color:#000;overflow-x:auto}
+.fh{margin-bottom:8px}
+.fh p{font-size:11px;font-weight:bold;margin:1px 0;line-height:1.5}
+.sit-box{margin-top:8px;padding:8px;border:1.5px solid #000;font-size:11px;font-weight:bold;line-height:1.6}
+.ftable{width:100%;border-collapse:collapse;margin-top:10px;table-layout:fixed}
+.ftable th{background:#1B3A6B;color:#fff;padding:7px 6px;font-size:10px;text-align:center;border:1px solid #000;font-weight:bold}
+.ftable td{padding:6px 7px;vertical-align:top;border:1px solid #000;font-size:11px;line-height:1.6;word-wrap:break-word;overflow-wrap:break-word}
+.ftable td.col-plan{background:#EBF0FB;font-weight:bold;font-size:10px;width:18%;white-space:pre-wrap}
+.ftable td.col-ens{width:28%;white-space:pre-wrap}
+.ftable td.col-app{width:18%;white-space:pre-wrap}
+.ftable td.col-tr{width:36%;white-space:pre-wrap}
+@media(max-width:600px){.ftable{font-size:9px}.ftable th{font-size:8px;padding:5px 4px}.ftable td{padding:4px 5px;font-size:9px}}
+
+/* Library */
+.lib-body{padding:14px;flex:1;max-width:960px;width:100%;margin:0 auto}
+.lib-top{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.lib-title{font-size:17px;font-weight:800;flex:1}
+.search-row{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.search-row input{flex:1;min-width:160px}
+.fsel{min-width:120px;font-size:12px}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+
+/* Confirm modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.44);z-index:600;align-items:center;justify-content:center;padding:14px}
+.ov.open{display:flex}
+.modal{background:var(--surf);border-radius:var(--r);padding:22px;max-width:380px;width:100%;box-shadow:var(--sh-lg)}
+.modal h3{font-size:15px;font-weight:800;margin-bottom:7px}
+.modal p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:18px}
+.modal-acts{display:flex;gap:8px;justify-content:flex-end}
+.btn-cancel{padding:8px 15px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--surf);font-family:inherit;font-size:13px;cursor:pointer}
+.btn-del{padding:8px 15px;border-radius:var(--rs);border:none;background:var(--red);color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn-del:hover{background:#B91C1C}
+
+/* Subject badge colors */
+.c-fr{background:#DBEAFE;color:#1D4ED8}.c-math{background:#D1FAE5;color:#065F46}
+.c-hg{background:#FEF3C7;color:#92400E}.c-svt{background:#DCFCE7;color:#166534}
+.c-en{background:#EDE9FE;color:#5B21B6}.c-ph{background:#FEE2E2;color:#991B1B}
+.c-eps{background:#FFEDD5;color:#9A3412}.c-phi{background:#F0FDF4;color:#14532D}
+.c-ot{background:#F1F5F9;color:#475569}
+
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(50px);background:var(--navy);color:#fff;padding:9px 18px;border-radius:var(--rs);font-size:13px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:999;white-space:nowrap;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── AI CONNECTION ── */
+.ai-conn-btn{display:flex;align-items:center;gap:5px;background:none;border:1.5px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 11px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
+.ai-conn-btn.off{color:rgba(255,255,255,.5)}
+.ai-conn-btn.off:hover{border-color:rgba(255,255,255,.5);color:#fff}
+.ai-conn-btn.on{color:#4ADE80;border-color:#4ADE80}
+.ai-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ai-dot.off{background:rgba(255,255,255,.3)}
+.ai-dot.on{background:#4ADE80;box-shadow:0 0 6px #4ADE80}
+
+/* Modal IA */
+.ai-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:700;align-items:center;justify-content:center;padding:14px}
+.ai-modal-bg.open{display:flex}
+.ai-modal{background:var(--surf);border-radius:var(--r);max-width:480px;width:100%;box-shadow:var(--sh-lg);overflow:hidden;max-height:90vh;overflow-y:auto}
+.ai-modal-head{background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:20px 20px 16px;position:relative}
+.ai-modal-head h2{font-size:17px;font-weight:800;color:#fff;margin-bottom:3px}
+.ai-modal-head p{font-size:12px;color:rgba(255,255,255,.7);line-height:1.5}
+.ai-modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:28px;height:28px;color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:.15s}
+.ai-modal-close:hover{background:rgba(255,255,255,.3)}
+.ai-modal-body{padding:20px}
+.provider-tabs{display:flex;gap:6px;margin-bottom:18px;overflow-x:auto;padding-bottom:2px}
+.ptab{padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:.15s;white-space:nowrap;flex-shrink:0}
+.ptab.active{background:var(--purple-l);border-color:#7C3AED;color:#5B21B6}
+.provider-panel{display:none}.provider-panel.active{display:block}
+.steps-guide{counter-reset:step;margin-bottom:16px}
+.sg-item{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
+.sg-num{width:22px;height:22px;border-radius:50%;background:#4F46E5;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.sg-txt{font-size:13px;color:var(--text);line-height:1.55;flex:1}
+.sg-txt a{color:#4F46E5;font-weight:600;word-break:break-all}
+.sg-txt code{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:11px;color:var(--text)}
+.key-input-row{display:flex;gap:7px;margin-bottom:6px}
+.key-input-row input{flex:1;font-family:monospace;font-size:12px;letter-spacing:.5px}
+.key-input-row input::placeholder{font-family:inherit;letter-spacing:0}
+.key-save-btn{padding:9px 16px;border-radius:var(--rs);border:none;background:#4F46E5;color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.15s;flex-shrink:0}
+.key-save-btn:hover{background:#3730A3}
+.key-status{font-size:12px;margin-top:4px;min-height:18px}
+.key-status.ok{color:var(--green)}.key-status.err{color:var(--red)}
+.provider-note{font-size:11px;color:var(--muted);line-height:1.6;background:var(--bg);border-radius:var(--rs);padding:9px 11px;margin-top:10px}
+.test-btn{display:inline-flex;align-items:center;gap:5px;margin-top:10px;padding:7px 14px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--surf);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:.15s}
+.test-btn:hover{border-color:#4F46E5;color:#4F46E5}
+.free-badge{display:inline-block;background:#DCFCE7;color:#166534;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:5px}
+.best-badge{display:inline-block;background:#EDE9FE;color:#5B21B6;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:5px}
+
+/* Recap */
+.recap-row{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.recap-row:last-child{border:none}
+.recap-lbl{font-weight:700;color:var(--muted);min-width:110px;flex-shrink:0}
+.recap-val{color:var(--text);flex:1}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="top" id="topbar">
+  <div class="t-brand">
+    <div class="t-ico">📋</div>
+    <div class="t-name">Fiches<span>Pro</span></div>
+  </div>
+  <div class="t-nav">
+    <button class="tnb on" id="tnb-home" onclick="showPage('home')"><span>🏠</span><span class="tnb-txt">Accueil</span></button>
+    <button class="tnb" id="tnb-new" onclick="newFiche()"><span>✏️</span><span class="tnb-txt">Nouvelle</span></button>
+    <button class="tnb" id="tnb-lib" onclick="showPage('library')"><span>📚</span><span class="tnb-txt">Bibliothèque</span></button>
+    <button class="ai-conn-btn off" id="ai-conn-btn" onclick="openAIModal()">
+      <div class="ai-dot off" id="ai-dot"></div>
+      <span id="ai-conn-lbl">IA non connectée</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ HOME ══ -->
+<div class="page active anim" id="page-home">
+  <div class="hero">
+    <div class="hi">
+      <div class="hero-badge">✨ Assistant IA intégré</div>
+      <div class="hero-h1">Créez vos <em>fiches de leçon</em><br>en quelques minutes</div>
+      <div class="hero-sub">Toutes matières · Collège & Lycée · Export PDF · Bibliothèque · Claude AI</div>
+      <div class="hero-btns">
+        <button class="btn-p" onclick="newFiche()">✏️ Nouvelle fiche</button>
+        <button class="btn-s" onclick="showPage('library')">📚 Mes fiches</button>
+      </div>
+    </div>
+  </div>
+  <div class="home-body">
+    <div class="sec-lbl">Tableau de bord</div>
+    <div class="stats">
+      <div class="stat"><div class="stat-v" id="s-tot">0</div><div class="stat-l">Fiches</div></div>
+      <div class="stat"><div class="stat-v" id="s-mat">0</div><div class="stat-l">Matières</div></div>
+      <div class="stat"><div class="stat-v" id="s-cl">0</div><div class="stat-l">Classes</div></div>
+      <div class="stat"><div class="stat-v" id="s-mo">0</div><div class="stat-l">Ce mois</div></div>
+    </div>
+    <div class="sec-lbl">Fiches récentes</div>
+    <div class="rcards" id="home-grid"></div>
+
+    <div class="sec-lbl" style="margin-top:20px">Sauvegarde & Transfert</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
+      <button class="btn-exp" onclick="exportAllJSON()">⬇ Exporter toutes les fiches (JSON)</button>
+      <button class="btn-exp" onclick="document.getElementById('imp-all').click()">⬆ Importer des fiches (JSON)</button>
+      <input type="file" id="imp-all" accept=".json" style="display:none" onchange="importJSON(this)">
+    </div>
+  </div>
+</div>
+
+<!-- ══ FORM ══ -->
+<div class="page" id="page-form">
+  <div class="fpage" id="fpage-scroll">
+    <div class="finner">
+      <div class="f-topbar">
+        <button class="back-btn" onclick="backToHome()">← Retour</button>
+        <div><div class="f-title" id="f-pg-title">Nouvelle fiche</div><div class="f-sub">Remplissez et laissez l'IA vous assister</div></div>
+      </div>
+      <div class="steps" id="steps">
+        <div class="stp active" id="stp0" onclick="goStep(0)"><div class="stp-n">1</div>En-tête & Plan</div>
+        <div class="stp" id="stp1" onclick="goStep(1)"><div class="stp-n">2</div>Situation</div>
+        <div class="stp" id="stp2" onclick="goStep(2)"><div class="stp-n">3</div>Tableau pédagogique</div>
+        <div class="stp" id="stp3" onclick="goStep(3)"><div class="stp-n">4</div>Finaliser</div>
+      </div>
+
+      <!-- ═ STEP 0 ═ En-tête & Plan du cours ════════════════════════════ -->
+      <div id="s0">
+        <div class="card">
+          <div class="card-t"><span class="card-ico">📌</span>Informations générales</div>
+          <div class="g2">
+            <div class="fld">
+              <label>Matière <span class="req">*</span></label>
+              <select id="f-mat">
+                <option value="">-- Choisir --</option>
+                <option>Français</option><option>Mathématiques</option>
+                <option>Histoire-Géographie</option><option>SVT</option>
+                <option>Anglais</option><option>Physique-Chimie</option>
+                <option>EPS</option><option>Philosophie</option>
+                <option>Économie</option><option>Informatique</option>
+                <option>Arts Plastiques</option><option>Musique</option><option>Autre</option>
+              </select>
+            </div>
+            <div class="fld">
+              <label>Classe <span class="req">*</span></label>
+              <select id="f-cl">
+                <option value="">-- Choisir --</option>
+                <optgroup label="Collège"><option>6ème</option><option>5ème</option><option>4ème</option><option>3ème</option></optgroup>
+                <optgroup label="Lycée"><option>2nde</option><option>1ère</option><option>Terminale</option></optgroup>
+              </select>
+            </div>
+          </div>
+          <div class="g2">
+            <div class="fld"><label>Date</label><input type="date" id="f-dt"></div>
+            <div class="fld">
+              <label>Durée</label>
+              <select id="f-dur"><option>1H</option><option selected>2H</option><option>3H</option><option>4H</option></select>
+            </div>
+          </div>
+          <div class="fld"><label>Compétence</label><input id="f-comp" placeholder="Ex: Compétence 3 — Traiter des situations..."></div>
+          <div class="fld"><label>Activité</label><input id="f-act" placeholder="Ex: Expression écrite"></div>
+          <div class="fld"><label>Leçon</label><input id="f-lec" placeholder="Ex: Leçon 1 — Le texte argumentatif"></div>
+          <div class="g2">
+            <div class="fld"><label>N° de séance</label><input id="f-snum" placeholder="Ex: SEANCE 1"></div>
+            <div class="fld"><label>Titre de la séance <span class="req">*</span></label><input id="f-sea" placeholder="Ex: Rédaction d'un texte argumentatif..."></div>
+          </div>
+        </div>
+
+        <!-- Plan du cours -->
+        <div class="card">
+          <div class="card-t"><span class="card-ico">📝</span>Plan du cours</div>
+          <div class="fld">
+            <label>Contenu du plan (sections)</label>
+            <textarea id="f-plan" rows="4" placeholder="Ex:&#10;I- Définition de la notion&#10;II- Les outils de la langue&#10;III- Recherche et organisation des idées&#10;IV- Rédaction collective"></textarea>
+            <div class="plan-tags" id="plan-tags">
+              <span class="plan-tag" onclick="addPlanTag('I- Définition')">+ I- Définition</span>
+              <span class="plan-tag" onclick="addPlanTag('II- Outils de la langue')">+ II- Outils</span>
+              <span class="plan-tag" onclick="addPlanTag('III- Recherche & Organisation')">+ III- Recherche</span>
+              <span class="plan-tag" onclick="addPlanTag('IV- Rédaction collective')">+ IV- Rédaction</span>
+              <span class="plan-tag" onclick="addPlanTag('I- Rappel de la leçon précédente')">+ Rappel</span>
+              <span class="plan-tag" onclick="addPlanTag('V- Évaluation')">+ Évaluation</span>
+            </div>
+          </div>
+
+          <div class="ai-panel">
+            <div class="ai-head"><div class="ai-ico">✨</div><div><div class="ai-label">IA — Suggérer le plan</div><div class="ai-sub">Décrivez ce que vous voulez enseigner</div></div></div>
+            <div class="ai-desc-row">
+              <input type="text" id="ai-plan-desc" placeholder="Ex: séance sur le texte argumentatif pour étayer une thèse...">
+              <button class="ai-desc-btn" id="ai-plan-btn" onclick="aiPlan()">Générer</button>
+            </div>
+            <div class="ai-spin" id="ai-spin-plan"><div class="spin"></div>Claude génère le plan...</div>
+            <div class="ai-out" id="ai-out-plan"></div>
+            <div class="ai-apply" id="ai-apply-plan"><button class="ai-apply-btn" onclick="applyAI('f-plan','ai-out-plan','ai-apply-plan')">✅ Appliquer dans le champ</button></div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:80px">
+          <button class="btn-save" onclick="goStep(1)">Suivant →</button>
+        </div>
+      </div>
+
+      <!-- ═ STEP 1 ═ Situation ══════════════════════════════════════════ -->
+      <div id="s1" style="display:none">
+        <div class="card">
+          <div class="card-t"><span class="card-ico">📖</span>Situation de départ</div>
+          <div class="fld">
+            <label>Texte de la situation <span class="req">*</span></label>
+            <textarea id="f-sit" rows="4" placeholder="Ex: Au cours d'un échange, l'inspecteur affirme : «la réussite scolaire est le résultat d'une bonne organisation personnelle.» Tu es interpellé par cette affirmation."></textarea>
+          </div>
+          <div class="fld">
+            <label>Questions / Consignes</label>
+            <textarea id="f-qs" rows="3" placeholder="1- Dégage le thème...&#10;2- Reformule la thèse...&#10;3- Trouve deux arguments...&#10;4- Rédige ta production."></textarea>
+          </div>
+        </div>
+
+        <div class="ai-panel">
+          <div class="ai-head"><div class="ai-ico">✨</div><div><div class="ai-label">IA — Situation & Questions</div><div class="ai-sub">Décrivez ce que vous souhaitez, l'IA rédige</div></div></div>
+          <div class="ai-desc-row">
+            <input type="text" id="ai-sit-desc" placeholder="Ex: situation sur la guerre et ses conséquences, pour un texte argumentatif...">
+            <button class="ai-desc-btn" id="ai-sit-btn" onclick="aiSituation()">Générer</button>
+          </div>
+          <div class="ai-spin" id="ai-spin-sit"><div class="spin"></div>Claude rédige la situation...</div>
+          <div class="ai-out" id="ai-out-sit"></div>
+          <div class="ai-apply" id="ai-apply-sit"><button class="ai-apply-btn" onclick="applyAISituation()">✅ Appliquer situation + questions</button></div>
+          <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px">
+            <button class="ai-chip" id="chip-qs" onclick="aiImproveQuestions()">💡 Améliorer les questions</button>
+            <button class="ai-chip" id="chip-an" onclick="aiAnalyze()">🔍 Analyser la situation</button>
+          </div>
+          <div class="ai-spin" id="ai-spin-sit2"><div class="spin"></div>Claude analyse...</div>
+          <div class="ai-out" id="ai-out-sit2"></div>
+          <div class="ai-apply" id="ai-apply-sit2"><button class="ai-apply-btn" onclick="applyAI('f-qs','ai-out-sit2','ai-apply-sit2')">✅ Appliquer</button></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:80px">
+          <button class="back-btn" onclick="goStep(0)">← Précédent</button>
+          <button class="btn-save" onclick="goStep(2)">Suivant →</button>
+        </div>
+      </div>
+
+      <!-- ═ STEP 2 ═ Tableau pédagogique ═══════════════════════════════ -->
+      <div id="s2" style="display:none">
+        <div class="ai-panel">
+          <div class="ai-head"><div class="ai-ico">✨</div><div><div class="ai-label">IA — Tableau pédagogique</div><div class="ai-sub">Décrivez ce que vous voulez ou utilisez les actions rapides</div></div></div>
+          <div class="ai-desc-row">
+            <input type="text" id="ai-tab-desc" placeholder="Ex: générer 2 lignes pour une séance sur le résumé de texte...">
+            <button class="ai-desc-btn" id="ai-tab-btn" onclick="aiTableFromDesc()">Générer</button>
+          </div>
+          <div class="ai-spin" id="ai-spin-tab"><div class="spin"></div>Claude construit le tableau...</div>
+          <div class="ai-out" id="ai-out-tab"></div>
+          <div class="ai-apply" id="ai-apply-tab"><button class="ai-apply-btn" onclick="aiApplyRows()">✅ Appliquer les lignes générées</button></div>
+          <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px">
+            <button class="ai-chip" onclick="aiFullTable()">🚀 Générer tableau complet</button>
+            <button class="ai-chip" onclick="aiOneRow()">➕ Ajouter une ligne</button>
+            <button class="ai-chip" onclick="aiEnrichTraces()">📝 Enrichir les traces</button>
+          </div>
+          <div class="ai-spin" id="ai-spin-tab2"><div class="spin"></div>Claude travaille...</div>
+          <div class="ai-out" id="ai-out-tab2"></div>
+          <div class="ai-apply" id="ai-apply-tab2"><button class="ai-apply-btn" onclick="aiApplyRows2()">✅ Appliquer</button></div>
+        </div>
+
+        <div class="rows-wrap" id="rows-wrap"></div>
+        <button class="add-row" onclick="addRow()">＋ Ajouter une ligne</button>
+
+        <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:80px;margin-top:14px">
+          <button class="back-btn" onclick="goStep(1)">← Précédent</button>
+          <button class="btn-save" onclick="goStep(3)">Suivant →</button>
+        </div>
+      </div>
+
+      <!-- ═ STEP 3 ═ Finaliser ══════════════════════════════════════════ -->
+      <div id="s3" style="display:none">
+        <div class="card">
+          <div class="card-t"><span class="card-ico">✅</span>Récapitulatif</div>
+          <div id="recap"></div>
+        </div>
+        <div class="card">
+          <div class="card-t"><span class="card-ico">📤</span>Exporter</div>
+          <div style="display:flex;gap:9px;flex-wrap:wrap">
+            <button class="btn-p" onclick="saveAndPreview()">👁 Aperçu complet</button>
+            <button class="btn-a btn-pdf" onclick="saveAndPDF()">📄 Exporter PDF</button>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:80px;margin-top:4px">
+          <button class="back-btn" onclick="goStep(2)">← Précédent</button>
+          <button class="btn-save" onclick="saveFiche()">💾 Sauvegarder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PREVIEW ══ -->
+<div class="page" id="page-preview">
+  <div class="prev-wrap">
+    <div class="prev-top">
+      <button class="back-btn" onclick="backFromPrev()">← Retour</button>
+      <div class="prev-title" id="prev-title">Aperçu</div>
+      <button class="btn-a btn-edit2" onclick="editCurrent()">✏️ Modifier</button>
+      <button class="btn-a btn-pdf" onclick="pdfCurrent()">📄 PDF</button>
+      <button class="btn-a btn-exp-s" onclick="exportOneJSON()">⬇ JSON</button>
+    </div>
+    <div id="fiche-out"></div>
+  </div>
+</div>
+
+<!-- ══ LIBRARY ══ -->
+<div class="page" id="page-library">
+  <div class="lib-body">
+    <div class="lib-top">
+      <div class="lib-title">📚 Bibliothèque</div>
+      <button class="btn-p" onclick="newFiche()">✏️ Nouvelle fiche</button>
+    </div>
+    <div class="search-row">
+      <input type="text" id="lib-q" placeholder="🔍 Rechercher..." oninput="renderLib()">
+      <select class="fsel" id="lib-mat" onchange="renderLib()"><option value="">Toutes matières</option></select>
+      <select class="fsel" id="lib-cl" onchange="renderLib()"><option value="">Toutes classes</option></select>
+    </div>
+    <div class="lib-grid" id="lib-grid"></div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="ov" id="modal-del">
+  <div class="modal">
+    <h3>Supprimer cette fiche ?</h3>
+    <p>Cette action est irréversible. La fiche sera définitivement supprimée de votre bibliothèque.</p>
+    <div class="modal-acts">
+      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+      <button class="btn-del" onclick="confirmDel()">Supprimer</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- ══ AI CONNECTION MODAL ══ -->
+<div class="ai-modal-bg" id="ai-modal-bg">
+  <div class="ai-modal">
+    <div class="ai-modal-head">
+      <button class="ai-modal-close" onclick="closeAIModal()">×</button>
+      <h2>🤖 Connecter l'assistant IA</h2>
+      <p>Choisissez un fournisseur gratuit et collez votre clé API pour activer l'assistant.</p>
+    </div>
+    <div class="ai-modal-body">
+      <div class="provider-tabs">
+        <button class="ptab active" onclick="switchProvider('groq')">Groq <span class="best-badge">Recommandé</span><span class="free-badge">Gratuit</span></button>
+        <button class="ptab" onclick="switchProvider('gemini')">Google Gemini <span class="free-badge">Gratuit</span></button>
+        <button class="ptab" onclick="switchProvider('openrouter')">OpenRouter <span class="free-badge">Gratuit</span></button>
+        <button class="ptab" onclick="switchProvider('mistral')">Mistral <span class="free-badge">Gratuit</span></button>
+      </div>
+
+      <!-- GROQ -->
+      <div class="provider-panel active" id="panel-groq">
+        <div class="steps-guide">
+          <div class="sg-item"><div class="sg-num">1</div><div class="sg-txt">Allez sur <a href="https://console.groq.com" target="_blank">console.groq.com</a> et créez un compte gratuit (pas de carte bancaire)</div></div>
+          <div class="sg-item"><div class="sg-num">2</div><div class="sg-txt">Dans le menu gauche, cliquez sur <code>API Keys</code> puis <code>Create API Key</code></div></div>
+          <div class="sg-item"><div class="sg-num">3</div><div class="sg-txt">Copiez la clé (commence par <code>gsk_</code>) et collez-la ci-dessous</div></div>
+        </div>
+        <div class="key-input-row">
+          <input type="password" id="key-groq" placeholder="gsk_xxxxxxxxxxxxxxxx">
+          <button class="key-save-btn" onclick="saveKey('groq')">Enregistrer</button>
+        </div>
+        <button class="test-btn" onclick="testKey('groq')">🔍 Tester la connexion</button>
+        <div class="key-status" id="status-groq"></div>
+        <div class="provider-note">✅ Groq est entièrement gratuit · Modèle utilisé : Llama 3.3 70B · Très rapide · Excellent en français</div>
+      </div>
+
+      <!-- GEMINI -->
+      <div class="provider-panel" id="panel-gemini">
+        <div class="steps-guide">
+          <div class="sg-item"><div class="sg-num">1</div><div class="sg-txt">Allez sur <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> et connectez-vous avec votre compte Google</div></div>
+          <div class="sg-item"><div class="sg-num">2</div><div class="sg-txt">Cliquez sur <code>Create API Key</code></div></div>
+          <div class="sg-item"><div class="sg-num">3</div><div class="sg-txt">Copiez la clé (commence par <code>AIza</code>) et collez-la ci-dessous</div></div>
+        </div>
+        <div class="key-input-row">
+          <input type="password" id="key-gemini" placeholder="AIzaSyxxxxxxxxxxxxxxxxx">
+          <button class="key-save-btn" onclick="saveKey('gemini')">Enregistrer</button>
+        </div>
+        <button class="test-btn" onclick="testKey('gemini')">🔍 Tester la connexion</button>
+        <div class="key-status" id="status-gemini"></div>
+        <div class="provider-note">✅ Gratuit avec un compte Google · Modèle : Gemini 1.5 Flash · Quota généreux · Bon en français</div>
+      </div>
+
+      <!-- OPENROUTER -->
+      <div class="provider-panel" id="panel-openrouter">
+        <div class="steps-guide">
+          <div class="sg-item"><div class="sg-num">1</div><div class="sg-txt">Allez sur <a href="https://openrouter.ai" target="_blank">openrouter.ai</a> et créez un compte gratuit</div></div>
+          <div class="sg-item"><div class="sg-num">2</div><div class="sg-txt">Allez dans <code>Settings → Keys</code> et créez une clé</div></div>
+          <div class="sg-item"><div class="sg-num">3</div><div class="sg-txt">Copiez la clé (commence par <code>sk-or-</code>) et collez-la ci-dessous</div></div>
+        </div>
+        <div class="key-input-row">
+          <input type="password" id="key-openrouter" placeholder="sk-or-xxxxxxxxxxxxxxxx">
+          <button class="key-save-btn" onclick="saveKey('openrouter')">Enregistrer</button>
+        </div>
+        <button class="test-btn" onclick="testKey('openrouter')">🔍 Tester la connexion</button>
+        <div class="key-status" id="status-openrouter"></div>
+        <div class="provider-note">✅ Accès à plusieurs modèles gratuits · Modèle utilisé : Llama 3.3 70B · Quota généreux</div>
+      </div>
+
+      <!-- MISTRAL -->
+      <div class="provider-panel" id="panel-mistral">
+        <div class="steps-guide">
+          <div class="sg-item"><div class="sg-num">1</div><div class="sg-txt">Allez sur <a href="https://console.mistral.ai" target="_blank">console.mistral.ai</a> et créez un compte gratuit</div></div>
+          <div class="sg-item"><div class="sg-num">2</div><div class="sg-txt">Dans <code>API Keys</code>, créez une nouvelle clé</div></div>
+          <div class="sg-item"><div class="sg-num">3</div><div class="sg-txt">Collez la clé ci-dessous</div></div>
+        </div>
+        <div class="key-input-row">
+          <input type="password" id="key-mistral" placeholder="xxxxxxxxxxxxxxxxxxxxxxxx">
+          <button class="key-save-btn" onclick="saveKey('mistral')">Enregistrer</button>
+        </div>
+        <button class="test-btn" onclick="testKey('mistral')">🔍 Tester la connexion</button>
+        <div class="key-status" id="status-mistral"></div>
+        <div class="provider-note">✅ Modèles francophones excellents · Mistral Small gratuit · Parfait pour les fiches en français</div>
+      </div>
+
+      <!-- Disconnect -->
+      <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div style="font-size:12px;color:var(--muted)">Clé stockée uniquement dans ce navigateur</div>
+        <button onclick="disconnectAI()" style="padding:6px 13px;border-radius:var(--rs);border:1.5px solid var(--red-l);background:none;font-family:inherit;font-size:12px;color:var(--red);cursor:pointer;transition:.15s" onmouseover="this.style.background='#FEE2E2'" onmouseout="this.style.background='none'">Déconnecter l'IA</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════ DATA ═══════════════════════════════════ */
+let fiches = JSON.parse(localStorage.getItem('fp2')||'[]');
+let rows   = [];
+let editId = null;
+let curFiche = null;
+let delTarget = null;
+let aiRowsCache = null; // last AI-generated rows JSON
+
+function save(){ localStorage.setItem('fp2', JSON.stringify(fiches)); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function pad(n){ return String(n).padStart(2,'0'); }
+function today(){ const d=new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+
+/* ═══════════════════════════════ NAV ════════════════════════════════════ */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active','anim');});
+  document.getElementById('page-'+id).classList.add('active','anim');
+  document.querySelectorAll('.tnb').forEach(b=>b.classList.remove('on'));
+  const map={home:'tnb-home',form:'tnb-new',library:'tnb-lib',preview:'tnb-home'};
+  if(map[id]) document.getElementById(map[id]).classList.add('on');
+  if(id==='home')    renderHome();
+  if(id==='library') renderLib();
+}
+
+/* ═══════════════════════════════ HOME ═══════════════════════════════════ */
+function matCls(m){
+  return {Français:'c-fr',Mathématiques:'c-math','Histoire-Géographie':'c-hg',SVT:'c-svt',Anglais:'c-en','Physique-Chimie':'c-ph',EPS:'c-eps',Philosophie:'c-phi'}[m]||'c-ot';
+}
+function fCard(f){
+  const col = matCls(f.mat);
+  const d = f.createdAt ? new Date(f.createdAt).toLocaleDateString('fr-FR') : '—';
+  const title = (f.sea||f.lec||'Sans titre').replace(/</g,'&lt;');
+  return `<div class="fcard" onclick="previewFiche('${f.id}')">
+    <span class="fcard-badge ${col}">${f.mat||'—'}</span>
+    <div class="fcard-title">${title}</div>
+    <div class="fcard-meta">${f.lec||''}${f.lec&&f.cl?' · ':''}${f.cl||''}</div>
+    <div class="fcard-foot">
+      <span class="fcard-cl">${d}</span>
+      <div class="fcard-acts">
+        <button class="fic-btn" title="Modifier" onclick="event.stopPropagation();editFiche('${f.id}')">✏️</button>
+        <button class="fic-btn" title="Dupliquer" onclick="event.stopPropagation();dupFiche('${f.id}')">📋</button>
+        <button class="fic-btn" title="Supprimer" onclick="event.stopPropagation();askDel('${f.id}')">🗑️</button>
+      </div>
+    </div>
+  </div>`;
+}
+function renderHome(){
+  document.getElementById('s-tot').textContent = fiches.length;
+  document.getElementById('s-mat').textContent = new Set(fiches.map(f=>f.mat).filter(Boolean)).size;
+  document.getElementById('s-cl').textContent  = new Set(fiches.map(f=>f.cl).filter(Boolean)).size;
+  const n=new Date(), mo=n.getMonth(), yr=n.getFullYear();
+  document.getElementById('s-mo').textContent  = fiches.filter(f=>{if(!f.createdAt)return false;const d=new Date(f.createdAt);return d.getMonth()===mo&&d.getFullYear()===yr;}).length;
+  const g=document.getElementById('home-grid');
+  const rec=[...fiches].sort((a,b)=>b.createdAt-a.createdAt).slice(0,6);
+  g.innerHTML = rec.length ? rec.map(fCard).join('') :
+    `<div class="empty"><div class="big">📋</div><p>Aucune fiche pour l'instant.<br>Cliquez sur <strong>Nouvelle fiche</strong> pour commencer.</p></div>`;
+}
+
+/* ═══════════════════════════════ LIBRARY ════════════════════════════════ */
+function renderLib(){
+  const q=(document.getElementById('lib-q').value||'').toLowerCase();
+  const fm=document.getElementById('lib-mat').value;
+  const fc=document.getElementById('lib-cl').value;
+  const mats=[...new Set(fiches.map(f=>f.mat).filter(Boolean))].sort();
+  const cls=[...new Set(fiches.map(f=>f.cl).filter(Boolean))].sort();
+  document.getElementById('lib-mat').innerHTML='<option value="">Toutes matières</option>'+mats.map(m=>`<option ${m===fm?'selected':''}>${m}</option>`).join('');
+  document.getElementById('lib-cl').innerHTML='<option value="">Toutes classes</option>'+cls.map(c=>`<option ${c===fc?'selected':''}>${c}</option>`).join('');
+  let list=[...fiches].sort((a,b)=>b.createdAt-a.createdAt);
+  if(q) list=list.filter(f=>((f.sea||'')+(f.lec||'')+(f.mat||'')+(f.cl||'')).toLowerCase().includes(q));
+  if(fm) list=list.filter(f=>f.mat===fm);
+  if(fc) list=list.filter(f=>f.cl===fc);
+  document.getElementById('lib-grid').innerHTML = list.length ? list.map(fCard).join('') :
+    `<div class="empty"><div class="big">🔍</div><p>Aucune fiche trouvée.</p></div>`;
+}
+
+/* ═══════════════════════════════ FORM ═══════════════════════════════════ */
+function newFiche(){
+  editId=null; rows=[{id:uid(),plan:'',ens:'',app:'',tr:''}];
+  clearForm(); document.getElementById('f-dt').value=today();
+  goStep(0); showPage('form');
+  document.getElementById('f-pg-title').textContent='Nouvelle fiche';
+}
+function editFiche(id){
+  const f=fiches.find(x=>x.id===id); if(!f) return;
+  editId=id; fillForm(f); goStep(0); showPage('form');
+  document.getElementById('f-pg-title').textContent='Modifier la fiche';
+}
+function editCurrent(){ if(curFiche) editFiche(curFiche.id); }
+function backToHome(){ showPage('home'); }
+function backFromPrev(){ if(editId) showPage('form'); else showPage('home'); }
+
+function clearForm(){
+  ['f-mat','f-cl','f-comp','f-act','f-lec','f-sea','f-snum','f-sit','f-qs','f-plan'].forEach(id=>{
+    const e=document.getElementById(id); if(e) e.value='';
+  });
+  document.getElementById('f-dur').value='2H';
+  renderRows();
+}
+function fillForm(f){
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v||'';}
+  s('f-mat',f.mat); s('f-cl',f.cl); s('f-comp',f.comp); s('f-act',f.act);
+  s('f-lec',f.lec); s('f-sea',f.sea); s('f-snum',f.snum);
+  s('f-dur',f.dur||'2H'); s('f-dt',f.dt||today());
+  s('f-sit',f.sit); s('f-qs',f.qs); s('f-plan',f.plan);
+  rows = (f.rows&&f.rows.length) ? f.rows.map(r=>({...r})) : [{id:uid(),plan:'',ens:'',app:'',tr:''}];
+  renderRows();
+}
+function collectForm(){
+  const g=id=>{ const e=document.getElementById(id); return e?e.value.trim():''; };
+  return {
+    id: editId||uid(),
+    mat:g('f-mat'), cl:g('f-cl'), comp:g('f-comp'), act:g('f-act'),
+    lec:g('f-lec'), sea:g('f-sea'), snum:g('f-snum'),
+    dur:g('f-dur'), dt:g('f-dt'),
+    sit:g('f-sit'), qs:g('f-qs'), plan:g('f-plan'),
+    rows: collectRows(),
+    createdAt: editId?(fiches.find(f=>f.id===editId)||{}).createdAt||Date.now():Date.now(),
+    updatedAt: Date.now(),
+  };
+}
+function saveFiche(){
+  const f=collectForm();
+  if(!f.mat){toast('Choisissez une matière');return null;}
+  if(!f.sea&&!f.lec){toast('Renseignez le titre de la séance');return null;}
+  if(editId){ const i=fiches.findIndex(x=>x.id===editId); if(i>=0)fiches[i]=f;else fiches.push(f); }
+  else { fiches.push(f); editId=f.id; }
+  save(); toast('Fiche sauvegardée ✓'); return f;
+}
+function saveAndPreview(){ const f=saveFiche(); if(f) previewFiche(f.id); }
+function saveAndPDF(){ const f=saveFiche(); if(f){ curFiche=f; renderFiche(f); setTimeout(()=>doPDF(f),400); } }
+
+/* Steps */
+function goStep(n){
+  for(let i=0;i<4;i++){
+    document.getElementById('s'+i).style.display=i===n?'block':'none';
+    const s=document.getElementById('stp'+i);
+    s.classList.toggle('active',i===n);
+    s.classList.toggle('done',i<n);
+  }
+  if(n===3) buildRecap();
+  const fp=document.getElementById('fpage-scroll');
+  if(fp) fp.scrollTop=0;
+}
+function buildRecap(){
+  const f=collectForm();
+  document.getElementById('recap').innerHTML=`
+    <div class="recap-row"><div class="recap-lbl">Matière</div><div class="recap-val">${f.mat||'—'}</div></div>
+    <div class="recap-row"><div class="recap-lbl">Classe</div><div class="recap-val">${f.cl||'—'} · ${f.dur}</div></div>
+    <div class="recap-row"><div class="recap-lbl">Leçon</div><div class="recap-val">${f.lec||'—'}</div></div>
+    <div class="recap-row"><div class="recap-lbl">Séance</div><div class="recap-val">${f.sea||'—'}</div></div>
+    <div class="recap-row"><div class="recap-lbl">Lignes tableau</div><div class="recap-val">${f.rows.length} ligne(s)</div></div>
+    <div class="recap-row"><div class="recap-lbl">Situation</div><div class="recap-val">${f.sit?f.sit.slice(0,90)+'…':'—'}</div></div>`;
+}
+
+/* Plan tags */
+function addPlanTag(txt){
+  const el=document.getElementById('f-plan');
+  const v=el.value; el.value=v+(v&&!v.endsWith('\n')?'\n':'')+txt; el.focus();
+}
+
+/* Rows */
+function addRow(){ rows=collectRows(); rows.push({id:uid(),plan:'',ens:'',app:'',tr:''}); renderRows(); }
+function removeRow(id){ if(rows.length<=1){toast('Au moins une ligne requise');return;} rows=rows.filter(r=>r.id!==id); renderRows(); }
+function collectRows(){
+  return rows.map(r=>({
+    id:r.id,
+    plan: (document.getElementById('rp-'+r.id)||{}).value||r.plan||'',
+    ens:  (document.getElementById('re-'+r.id)||{}).value||r.ens||'',
+    app:  (document.getElementById('ra-'+r.id)||{}).value||r.app||'',
+    tr:   (document.getElementById('rt-'+r.id)||{}).value||r.tr||'',
+  }));
+}
+function renderRows(){
+  document.getElementById('rows-wrap').innerHTML = rows.map((r,i)=>`
+    <div class="row-card" id="rc-${r.id}">
+      <div class="row-hd">
+        <div class="row-num">${i+1}</div>
+        <div class="row-lbl">Ligne ${i+1}</div>
+        <button class="row-del" onclick="removeRow('${r.id}')">×</button>
+      </div>
+      <div class="row-cols">
+        <div class="fld"><label>Plan du cours</label><textarea id="rp-${r.id}" rows="5" placeholder="Ex: I-Définition&#10;II-Outils...">${r.plan||''}</textarea></div>
+        <div class="fld"><label>Activités Enseignant</label><textarea id="re-${r.id}" rows="5" placeholder="Ex: -Quelle activité avons-nous ?&#10;-Écrire la situation...">${r.ens||''}</textarea></div>
+        <div class="fld"><label>Activités Apprenants</label><textarea id="ra-${r.id}" rows="5" placeholder="Ex: -(ils répondent)&#10;-(ils s'exécutent)">${r.app||''}</textarea></div>
+        <div class="fld"><label>Traces Écrites</label><textarea id="rt-${r.id}" rows="5" placeholder="Ex: I-Définition&#10;Un texte argumentatif est...">${r.tr||''}</textarea></div>
+      </div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════ PREVIEW ════════════════════════════════ */
+function previewFiche(id){
+  const f=fiches.find(x=>x.id===id); if(!f) return;
+  curFiche=f; renderFiche(f);
+  document.getElementById('prev-title').textContent=f.sea||f.lec||'Fiche';
+  showPage('preview');
+}
+function renderFiche(f){
+  const d=f.dt?new Date(f.dt+'T12:00:00').toLocaleDateString('fr-FR'):'___________';
+  const qs=(f.qs||'').split('\n').filter(Boolean).map(q=>`<div>${q}</div>`).join('');
+  // *** FIX: render ALL rows, not just last ***
+  const rowsHtml=(f.rows||[]).map(r=>`
+    <tr>
+      <td class="col-plan">${esc(r.plan||'')}</td>
+      <td class="col-ens">${esc(r.ens||'')}</td>
+      <td class="col-app">${esc(r.app||'')}</td>
+      <td class="col-tr">${esc(r.tr||'')}</td>
+    </tr>`).join('');
+  document.getElementById('fiche-out').innerHTML=`
+    <div class="fh">
+      <p>DATE : ${d}</p>
+      <p>CLASSE : ${f.cl||'___'}</p>
+      ${f.comp?`<p>${f.comp}</p>`:''}
+      ${f.act?`<p>ACTIVITE : ${f.act}</p>`:''}
+      ${f.lec?`<p>${f.lec}</p>`:''}
+      ${f.sit?`<div class="sit-box"><b>SITUATION :</b> ${f.sit.replace(/\n/g,'<br>')}<br><br>${qs}</div>`:''}
+      <p style="margin-top:7px"><b>${f.snum||''} ${f.sea||''}</b></p>
+      <p><b>DUREE : ${f.dur||'2H'}</b></p>
+    </div>
+    <table class="ftable">
+      <thead><tr><th>PLAN DU COURS</th><th>ACTIVITES ENSEIGNANT</th><th>ACTIVITES APPRENANTS</th><th>TRACES ECRITES</th></tr></thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>`;
+}
+function esc(txt){ return (txt||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function doPDF(f){
+  toast('Génération du PDF...');
+  const el=document.getElementById('fiche-out');
+  el.style.display='block';
+  await new Promise(r=>setTimeout(r,250));
+  try{
+    const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false});
+    const {jsPDF}=window.jspdf;
+    const pw=210, ph=297;
+    const ih=canvas.height*pw/canvas.width;
+    const pages=Math.ceil(ih/ph);
+    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    for(let i=0;i<pages;i++){ if(i>0)pdf.addPage(); pdf.addImage(canvas.toDataURL('image/jpeg',.93),'JPEG',0,0-i*ph,pw,ih); }
+    const nm=(f.sea||f.lec||'fiche').replace(/[^a-z0-9]/gi,'_').slice(0,40);
+    pdf.save(`Fiche_${nm}.pdf`); toast('PDF exporté !');
+  }catch(e){ toast('Erreur PDF'); console.error(e); }
+}
+function pdfCurrent(){ if(curFiche) doPDF(curFiche); }
+
+/* ═══════════════════════════════ CRUD ═══════════════════════════════════ */
+function dupFiche(id){
+  const f=fiches.find(x=>x.id===id); if(!f) return;
+  fiches.push({...f,id:uid(),sea:(f.sea||'')+'(copie)',createdAt:Date.now(),updatedAt:Date.now()});
+  save(); renderHome(); toast('Fiche dupliquée ✓');
+}
+function askDel(id){ delTarget=id; document.getElementById('modal-del').classList.add('open'); }
+function closeModal(){ document.getElementById('modal-del').classList.remove('open'); delTarget=null; }
+function confirmDel(){ fiches=fiches.filter(f=>f.id!==delTarget); save(); renderHome(); renderLib(); closeModal(); toast('Supprimée'); }
+
+/* ═══════════════════════════════ AI CONNECTION ══════════════════════════ */
+const PROVIDERS = {
+  groq:{
+    name:'Groq', keyPrefix:'gsk_',
+    url:'https://api.groq.com/openai/v1/chat/completions',
+    model:'llama-3.3-70b-versatile',
+    format:'openai'
+  },
+  gemini:{
+    name:'Gemini', keyPrefix:'AIza',
+    url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+    model:'gemini-1.5-flash',
+    format:'gemini'
+  },
+  openrouter:{
+    name:'OpenRouter', keyPrefix:'sk-or-',
+    url:'https://openrouter.ai/api/v1/chat/completions',
+    model:'meta-llama/llama-3.3-70b-instruct:free',
+    format:'openai'
+  },
+  mistral:{
+    name:'Mistral', keyPrefix:'',
+    url:'https://api.mistral.ai/v1/chat/completions',
+    model:'mistral-small-latest',
+    format:'openai'
+  }
+};
+
+let aiProvider = localStorage.getItem('fp_provider')||'groq';
+let aiKey      = localStorage.getItem('fp_key_'+aiProvider)||'';
+
+function getActiveProvider(){ return PROVIDERS[aiProvider]; }
+function isAIReady(){ return !!(localStorage.getItem('fp_key_'+aiProvider)); }
+
+function updateAIStatus(){
+  const ready = isAIReady();
+  const btn = document.getElementById('ai-conn-btn');
+  const dot = document.getElementById('ai-dot');
+  const lbl = document.getElementById('ai-conn-lbl');
+  btn.className = 'ai-conn-btn '+(ready?'on':'off');
+  dot.className = 'ai-dot '+(ready?'on':'off');
+  const p = PROVIDERS[aiProvider];
+  lbl.textContent = ready ? `IA — ${p.name}` : "Connecter l'IA";
+}
+
+function openAIModal(){
+  document.getElementById('ai-modal-bg').classList.add('open');
+  // Pre-fill saved keys
+  Object.keys(PROVIDERS).forEach(pid=>{
+    const k=localStorage.getItem('fp_key_'+pid)||'';
+    const el=document.getElementById('key-'+pid);
+    if(el&&k) el.value=k;
+  });
+  // Activate current provider tab
+  switchProvider(aiProvider);
+}
+function closeAIModal(){ document.getElementById('ai-modal-bg').classList.remove('open'); }
+document.getElementById('ai-modal-bg').addEventListener('click',function(e){if(e.target===this)closeAIModal();});
+
+function switchProvider(pid){
+  aiProvider=pid;
+  document.querySelectorAll('.ptab').forEach((t,i)=>t.classList.toggle('active',Object.keys(PROVIDERS)[i]===pid));
+  document.querySelectorAll('.provider-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+pid).classList.add('active');
+}
+
+function saveKey(pid){
+  const k=(document.getElementById('key-'+pid).value||'').trim();
+  if(!k){setStatus(pid,'Collez votre clé API','err');return;}
+  localStorage.setItem('fp_key_'+pid,k);
+  localStorage.setItem('fp_provider',pid);
+  aiProvider=pid; aiKey=k;
+  updateAIStatus();
+  setStatus(pid,'✅ Clé enregistrée ! Testez la connexion.','ok');
+}
+
+function disconnectAI(){
+  Object.keys(PROVIDERS).forEach(pid=>localStorage.removeItem('fp_key_'+pid));
+  ['groq','gemini','openrouter','mistral'].forEach(pid=>{const el=document.getElementById('key-'+pid);if(el)el.value='';});
+  updateAIStatus();
+  setStatus(aiProvider,'IA déconnectée.','err');
+}
+
+function setStatus(pid,msg,cls){
+  const el=document.getElementById('status-'+pid);
+  if(el){el.textContent=msg;el.className='key-status '+cls;}
+}
+
+async function testKey(pid){
+  const k=(document.getElementById('key-'+pid).value||localStorage.getItem('fp_key_'+pid)||'').trim();
+  if(!k){setStatus(pid,"Entrez d'abord votre clé","err");return;}
+  setStatus(pid,'⏳ Test en cours...','');
+  try{
+    const result=await callAIWith(pid,k,'Dis juste "OK" en un mot.','Tu réponds en un mot.');
+    setStatus(pid,"✅ Connexion réussie ! L'IA est prête.",'ok');
+    // auto-save on success
+    localStorage.setItem('fp_key_'+pid,k);
+    localStorage.setItem('fp_provider',pid);
+    aiProvider=pid; updateAIStatus();
+  }catch(e){
+    setStatus(pid,'❌ Erreur : '+e.message,'err');
+  }
+}
+
+async function callAIWith(pid, key, prompt, system){
+  const p = PROVIDERS[pid];
+  const sys = system||`Tu es un expert en pédagogie pour l'enseignement secondaire en Afrique francophone (collège et lycée ivoirien). Tu aides les enseignants à préparer des fiches de cours avec 4 colonnes : Plan du cours | Activités Enseignant | Activités Apprenants | Traces Écrites. Réponds toujours en français. Sois concis et pratique.`;
+
+  let url=p.url, headers={'Content-Type':'application/json'}, body;
+
+  if(p.format==='openai'){
+    headers['Authorization']='Bearer '+key;
+    if(pid==='openrouter') headers['HTTP-Referer']='https://fichespro.app';
+    body=JSON.stringify({model:p.model,max_tokens:1800,messages:[{role:'system',content:sys},{role:'user',content:prompt}]});
+  } else if(p.format==='gemini'){
+    url=p.url+'?key='+key;
+    body=JSON.stringify({contents:[{parts:[{text:sys+'\n\n'+prompt}]}],generationConfig:{maxOutputTokens:1800}});
+  }
+
+  const resp=await fetch(url,{method:'POST',headers,body});
+  if(!resp.ok){ const t=await resp.text(); throw new Error('HTTP '+resp.status+' — '+t.slice(0,120)); }
+  const data=await resp.json();
+
+  if(p.format==='openai') return data.choices?.[0]?.message?.content||'Pas de réponse';
+  if(p.format==='gemini') return data.candidates?.[0]?.content?.parts?.[0]?.text||'Pas de réponse';
+  return 'Format inconnu';
+}
+
+async function callAI(prompt, system){
+  if(!isAIReady()){
+    openAIModal();
+    throw new Error("Connectez l'IA d'abord");
+  }
+  const key=localStorage.getItem('fp_key_'+aiProvider);
+  return callAIWith(aiProvider, key, prompt, system);
+}
+
+function spin(id,on){ document.getElementById(id).classList.toggle('on',on); }
+function showOut(id,txt){ const e=document.getElementById(id); e.textContent=txt; e.classList.add('on'); }
+function showApply(id){ document.getElementById(id).classList.add('on'); }
+function applyAI(targetField, outId, applyId){
+  const txt=document.getElementById(outId).textContent;
+  document.getElementById(targetField).value=txt;
+  document.getElementById(applyId).classList.remove('on');
+  toast('Contenu appliqué ✓');
+}
+
+/* — Plan du cours — */
+async function aiPlan(){
+  const desc=document.getElementById('ai-plan-desc').value.trim();
+  const mat=document.getElementById('f-mat').value;
+  const cl=document.getElementById('f-cl').value;
+  if(!desc){toast('Décrivez ce que vous souhaitez');return;}
+  document.getElementById('ai-plan-btn').disabled=true;
+  spin('ai-spin-plan',true);
+  try{
+    const txt=await callAI(`Matière: ${mat||'non précisée'}, Classe: ${cl||'non précisée'}\nDemande: ${desc}\n\nGénère un plan du cours structuré et hiérarchisé (romains I, II, III...) adapté à cette séance. Format lisible, sans markdown.`);
+    spin('ai-spin-plan',false);
+    showOut('ai-out-plan',txt);
+    showApply('ai-apply-plan');
+  }catch(e){ spin('ai-spin-plan',false); console.error(e); showOut('ai-out-plan','⚠️ '+e.message); if(e.message&&e.message.includes('Connectez')) openAIModal(); }
+  document.getElementById('ai-plan-btn').disabled=false;
+}
+
+/* — Situation — */
+let aiSitData='';
+async function aiSituation(){
+  const desc=document.getElementById('ai-sit-desc').value.trim();
+  const mat=document.getElementById('f-mat').value;
+  const cl=document.getElementById('f-cl').value;
+  const lec=document.getElementById('f-lec').value;
+  if(!desc){toast('Décrivez la situation souhaitée');return;}
+  document.getElementById('ai-sit-btn').disabled=true;
+  spin('ai-spin-sit',true);
+  try{
+    const txt=await callAI(`Matière: ${mat||'Français'}, Classe: ${cl||'3ème'}, Leçon: ${lec||'—'}\nDescription: ${desc}\n\nGénère:\n1. Un texte de SITUATION réaliste (2-4 phrases, ancré dans le contexte africain/ivoirien si pertinent).\n2. Exactement 4 QUESTIONS/CONSIGNES numérotées adaptées à la situation et au niveau de la classe.\n\nFormat de réponse — deux blocs séparés par "---QUESTIONS---":\n[Texte de la situation]\n---QUESTIONS---\n1- ...\n2- ...\n3- ...\n4- ...`);
+    spin('ai-spin-sit',false);
+    aiSitData=txt;
+    // Preview only the situation part
+    const parts=txt.split('---QUESTIONS---');
+    showOut('ai-out-sit', parts[0].trim()+(parts[1]?'\n\n---\n'+parts[1].trim():''));
+    showApply('ai-apply-sit');
+  }catch(e){ spin('ai-spin-sit',false); console.error(e); showOut('ai-out-sit','⚠️ '+e.message); if(e.message&&e.message.includes('Connectez')) openAIModal(); }
+  document.getElementById('ai-sit-btn').disabled=false;
+}
+function applyAISituation(){
+  const parts=aiSitData.split('---QUESTIONS---');
+  if(parts[0]) document.getElementById('f-sit').value=parts[0].trim();
+  if(parts[1]) document.getElementById('f-qs').value=parts[1].trim();
+  document.getElementById('ai-apply-sit').classList.remove('on');
+  toast('Situation et questions appliquées ✓');
+}
+async function aiImproveQuestions(){
+  const sit=document.getElementById('f-sit').value.trim();
+  const qs=document.getElementById('f-qs').value.trim();
+  if(!sit&&!qs){toast('Renseignez d\'abord la situation ou les questions');return;}
+  document.getElementById('chip-qs').disabled=true;
+  spin('ai-spin-sit2',true);
+  try{
+    const txt=await callAI(`Situation: ${sit||'—'}\nQuestions actuelles: ${qs||'—'}\n\nAméliore ou génère 4 questions pédagogiques bien formulées, progressives (de la compréhension à la production), adaptées au niveau collège/lycée. Numérote-les de 1 à 4.`);
+    spin('ai-spin-sit2',false);
+    showOut('ai-out-sit2',txt);
+    showApply('ai-apply-sit2');
+  }catch(e){ spin('ai-spin-sit2',false); console.error(e); showOut('ai-out-sit2','⚠️ '+e.message); if(e.message&&e.message.includes('Connectez')) openAIModal(); }
+  document.getElementById('chip-qs').disabled=false;
+}
+async function aiAnalyze(){
+  const sit=document.getElementById('f-sit').value.trim();
+  if(!sit){toast('Renseignez d\'abord la situation');return;}
+  document.getElementById('chip-an').disabled=true;
+  spin('ai-spin-sit2',true);
+  try{
+    const txt=await callAI(`Situation: ${sit}\n\nFais une analyse pédagogique courte (5 lignes max) : thème, thèse, stratégie argumentative, compétences visées, points clés à exploiter en classe.`);
+    spin('ai-spin-sit2',false);
+    showOut('ai-out-sit2',txt);
+  }catch(e){ spin('ai-spin-sit2',false); console.error(e); showOut('ai-out-sit2','⚠️ '+e.message); if(e.message&&e.message.includes('Connectez')) openAIModal(); }
+  document.getElementById('chip-an').disabled=false;
+}
+
+/* — Tableau pédagogique — */
+let aiRowsJSON=null, aiRowsJSON2=null;
+
+async function aiTableFromDesc(){
+  rows=collectRows();
+  const desc=document.getElementById('ai-tab-desc').value.trim();
+  if(!desc){toast('Décrivez ce que vous souhaitez');return;}
+  const mat=document.getElementById('f-mat').value;
+  const sea=document.getElementById('f-sea').value;
+  const sit=document.getElementById('f-sit').value;
+  document.getElementById('ai-tab-btn').disabled=true;
+  spin('ai-spin-tab',true);
+  try{
+    const txt=await callAI(`Matière: ${mat||'Français'}, Séance: ${sea||'—'}, Situation: ${sit||'—'}\nDemande: ${desc}\n\nGénère des lignes pour le tableau pédagogique. Réponds UNIQUEMENT en JSON valide, sans markdown:\n[\n  {"plan":"...","ens":"...","app":"...","tr":"..."}\n]\nLégende: plan=plan du cours, ens=activités enseignant (questions/instructions ligne par ligne), app=activités apprenants (réactions attendues), tr=traces écrites (contenu complet au tableau)`,
+    'Tu es expert en pédagogie. Réponds uniquement en JSON valide sans markdown ni commentaire.');
+    spin('ai-spin-tab',false);
+    // Try to extract JSON even if there's some text around it
+    let jsonTxt=txt;
+    const m=txt.match(/\[[\s\S]*\]/);
+    if(m) jsonTxt=m[0];
+    try{
+      aiRowsJSON=JSON.parse(jsonTxt);
+      showOut('ai-out-tab',`✅ ${aiRowsJSON.length} ligne(s) générée(s) — cliquez "Appliquer" pour les ajouter au tableau.\n\nAperçu :\n${aiRowsJSON.map((r,i)=>`Ligne ${i+1} — Plan: ${(r.plan||'').slice(0,60)}...`).join('\n')}`);
+      showApply('ai-apply-tab');
+    }catch{ showOut('ai-out-tab',txt); }
+  }catch(e){ spin('ai-spin-tab',false); console.error(e); showOut('ai-out-tab','⚠️ '+e.message); if(e.message&&e.message.includes('Connectez')) openAIModal(); }
+  document.getElementById('ai-tab-btn').disabled=false;
+}
+function aiApplyRows(){
+  if(!aiRowsJSON){toast('Générez d\'abord du contenu');return;}
+  rows=collectRows();
+  aiRowsJSON.forEach(r=>rows.push({id:uid(),plan:r.plan||'',ens:r.ens||'',app:r.app||'',tr:r.tr||''}));
+  renderRows();
+  document.getElementById('ai-apply-tab').classList.remove('on');
+  aiRowsJSON=null;
+  toast(`Lignes ajoutées ✓`);
+}
+
+async function aiFullTable(){
+  rows=collectRows();
+  const mat=document.getElementById('f-mat').value;
+  const sea=document.getElementById('f-sea').value;
+  const sit=document.getElementById('f-sit').value;
+  const plan=document.getElementById('f-plan').value;
+  spin('ai-spin-tab2',true);
+  try{
+    const txt=await callAI(`Matière: ${mat||'Français'}, Séance: ${sea||'—'}, Situation: ${sit||'—'}, Plan: ${plan||'—'}\n\nGénère 2-3 lignes complètes pour le tableau pédagogique. JSON uniquement:\n[{"plan":"...","ens":"...","app":"...","tr":"..."}]\nens=questions courtes enseignant ligne par ligne, app=réactions élèves (ils répondent / s'exécutent), tr=contenu détaillé traces écrites.`,
+    'Tu es expert pédagogie. JSON pur sans markdown.');
+    spin('ai-spin-tab2',false);
+    const m=txt.match(/\[[\s\S]*\]/);
+    try{
+      aiRowsJSON2=JSON.parse(m?m[0]:txt);
+      showOut('ai-out-tab2',`✅ ${aiRowsJSON2.length} ligne(s) — Cliquez "Appliquer".`);
+      showApply('ai-apply-tab2');
+    }catch{ showOut('ai-out-tab2',txt); }
+  }catch(e){ spin('ai-spin-tab2',false); console.error(e); showOut('ai-out-tab2','⚠️ '+e.message); if(e.message&&e.message.includes('Connectez')) openAIModal(); }
+}
+async function aiOneRow(){
+  rows=collectRows();
+  const mat=document.getElementById('f-mat').value;
+  const sea=document.getElementById('f-sea').value;
+  spin('ai-spin-tab2',true);
+  try{
+    const txt=await callAI(`Matière: ${mat||'—'}, Séance: ${sea||'—'}, déjà ${rows.length} ligne(s).\nGénère UNE ligne supplémentaire. JSON pur: {"plan":"...","ens":"...","app":"...","tr":"..."}`,
+    'JSON pur sans markdown.');
+    spin('ai-spin-tab2',false);
+    const m=txt.match(/\{[\s\S]*\}/);
+    try{
+      const r=JSON.parse(m?m[0]:txt);
+      aiRowsJSON2=[r];
+      showOut('ai-out-tab2','✅ 1 ligne générée — Cliquez "Appliquer".');
+      showApply('ai-apply-tab2');
+    }catch{ showOut('ai-out-tab2',txt); }
+  }catch(e){ spin('ai-spin-tab2',false); console.error(e); showOut('ai-out-tab2','⚠️ '+e.message); if(e.message&&e.message.includes('Connectez')) openAIModal(); }
+}
+async function aiEnrichTraces(){
+  rows=collectRows();
+  const mat=document.getElementById('f-mat').value;
+  const lec=document.getElementById('f-lec').value;
+  const sit=document.getElementById('f-sit').value;
+  spin('ai-spin-tab2',true);
+  try{
+    const txt=await callAI(`Matière: ${mat||'—'}, Leçon: ${lec||'—'}, Situation: ${sit||'—'}\n\nSuggère du contenu riche pour les colonnes "Traces Écrites" : définitions, exemples, règles, structure détaillée. Présente avec des titres numérotés I, II, III... sans markdown.`);
+    spin('ai-spin-tab2',false);
+    showOut('ai-out-tab2',txt);
+  }catch(e){ spin('ai-spin-tab2',false); console.error(e); showOut('ai-out-tab2','⚠️ '+e.message); if(e.message&&e.message.includes('Connectez')) openAIModal(); }
+}
+function aiApplyRows2(){
+  if(!aiRowsJSON2){toast('Générez d\'abord du contenu');return;}
+  rows=collectRows();
+  aiRowsJSON2.forEach(r=>rows.push({id:uid(),plan:r.plan||'',ens:r.ens||'',app:r.app||'',tr:r.tr||''}));
+  renderRows();
+  document.getElementById('ai-apply-tab2').classList.remove('on');
+  aiRowsJSON2=null;
+  toast('Lignes ajoutées ✓');
+}
+
+/* ═══════════════════════════════ TOAST ══════════════════════════════════ */
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),2400);
+}
+
+/* ═══════════════════════════════ EXPORT / IMPORT ════════════════════════ */
+function dl(content, filename, type){
+  const b=new Blob([content],{type});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');
+  a.href=u; a.download=filename; a.click();
+  URL.revokeObjectURL(u);
+}
+
+function exportAllJSON(){
+  if(!fiches.length){toast('Aucune fiche à exporter');return;}
+  const data={app:'FichesPro',version:2,exported:new Date().toISOString(),count:fiches.length,fiches};
+  dl(JSON.stringify(data,null,2),'FichesPro_toutes_fiches.json','application/json');
+  toast(`${fiches.length} fiche(s) exportée(s) ✓`);
+}
+
+function exportOneJSON(){
+  if(!curFiche){toast('Aucune fiche sélectionnée');return;}
+  const data={app:'FichesPro',version:2,exported:new Date().toISOString(),count:1,fiches:[curFiche]};
+  const nom=(curFiche.sea||curFiche.lec||'fiche').replace(/[^a-z0-9]/gi,'_').slice(0,40);
+  dl(JSON.stringify(data,null,2),`Fiche_${nom}.json`,'application/json');
+  toast('Fiche exportée en JSON ✓');
+}
+
+function importJSON(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const raw=JSON.parse(e.target.result);
+      // Support both array format and {fiches:[...]} format
+      const list = Array.isArray(raw) ? raw : (raw.fiches||[]);
+      if(!list.length){toast('Fichier vide ou format invalide');return;}
+      const existing=new Set(fiches.map(f=>f.id));
+      let added=0, updated=0;
+      list.forEach(f=>{
+        if(!f.id) f.id=uid();
+        if(existing.has(f.id)){
+          const i=fiches.findIndex(x=>x.id===f.id);
+          fiches[i]=f; updated++;
+        } else {
+          fiches.push(f); added++;
+        }
+      });
+      save(); renderHome(); renderLib();
+      toast(`${added} ajoutée(s), ${updated} mise(s) à jour ✓`);
+    }catch(err){
+      console.error(err);
+      toast('Fichier JSON invalide');
+    }
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+/* ═══════════════════════════════ INIT ═══════════════════════════════════ */
+renderHome();
+document.getElementById('f-dt').value=today();
+updateAIStatus();
+</script>
+</body>
+</html>
