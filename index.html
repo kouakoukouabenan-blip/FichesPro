@@ -269,6 +269,69 @@ textarea{resize:vertical;min-height:68px;line-height:1.6}
 .recap-row:last-child{border:none}
 .recap-lbl{font-weight:700;color:var(--muted);min-width:110px;flex-shrink:0}
 .recap-val{color:var(--text);flex:1}
+
+/* ── CELL AI ASSISTANT ── */
+.cell-wrap{position:relative}
+.cell-ai-btn{display:flex;align-items:center;gap:4px;margin-top:4px;padding:4px 10px;border-radius:20px;border:1.5px solid #C4B5FD;background:#F5F3FF;cursor:pointer;font-size:11px;font-weight:700;color:#4338CA;font-family:inherit;transition:.12s;width:100%;justify-content:center}
+.cell-ai-btn:hover{background:#EEF2FF;border-color:#818CF8;transform:none}
+
+/* Cell AI Modal */
+.cell-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;align-items:flex-end;justify-content:center;padding:0}
+.cell-modal-bg.open{display:flex}
+@media(min-width:600px){.cell-modal-bg{align-items:center;padding:14px}}
+.cell-modal{background:var(--surf);border-radius:var(--r) var(--r) 0 0;width:100%;max-width:560px;box-shadow:var(--sh-lg);max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+@media(min-width:600px){.cell-modal{border-radius:var(--r)}}
+.cm-head{background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.cm-ico{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.cm-title{font-size:13px;font-weight:700;color:#fff;flex:1}
+.cm-close{background:rgba(255,255,255,.15);border:none;border-radius:50%;width:26px;height:26px;color:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.cm-body{padding:14px}
+.cm-current{background:var(--bg);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--text);line-height:1.65;margin-bottom:12px;max-height:100px;overflow-y:auto;white-space:pre-wrap;border-left:3px solid #6366F1}
+.cm-current-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.cm-actions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.cm-act{padding:6px 12px;border-radius:20px;border:1.5px solid #C4B5FD;background:#fff;font-family:inherit;font-size:11px;font-weight:700;color:#4338CA;cursor:pointer;transition:.12s}
+.cm-act:hover{background:#EEF2FF;border-color:#818CF8}
+.cm-desc-row{display:flex;gap:7px;margin-bottom:10px}
+.cm-desc-row input{flex:1;font-size:12px;padding:8px 10px;border-color:#C4B5FD}
+.cm-desc-row input:focus{border-color:#6366F1}
+.cm-go{padding:8px 14px;border-radius:var(--rs);border:none;background:#6366F1;color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.cm-go:disabled{opacity:.5;cursor:not-allowed}
+.cm-spin{display:none;align-items:center;gap:6px;font-size:11px;color:#6366F1;margin-bottom:8px}
+.cm-spin.on{display:flex}
+.cm-result{display:none;background:#fff;border:1.5px solid #C4B5FD;border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--text);line-height:1.7;white-space:pre-wrap;max-height:180px;overflow-y:auto;margin-bottom:10px}
+.cm-result.on{display:block}
+.cm-apply-row{display:none;gap:7px}
+.cm-apply-row.on{display:flex}
+.cm-apply{flex:1;padding:8px;border-radius:var(--rs);border:none;background:var(--green);color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.cm-apply:hover{background:#15803d}
+.cm-discard{padding:8px 14px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--surf);font-family:inherit;font-size:12px;cursor:pointer;color:var(--muted)}
+
+/* ── SCHEMA EDITOR ── */
+.schema-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:900;align-items:center;justify-content:center;padding:10px}
+.schema-modal-bg.open{display:flex}
+.schema-modal{background:var(--surf);border-radius:var(--r);width:100%;max-width:720px;max-height:90vh;display:flex;flex-direction:column;box-shadow:var(--sh-lg);overflow:hidden}
+.sm-head{background:var(--navy);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.sm-title{font-size:13px;font-weight:700;color:#fff;flex:1}
+.sm-close{background:rgba(255,255,255,.15);border:none;border-radius:50%;width:26px;height:26px;color:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.sm-toolbar{display:flex;gap:6px;padding:10px 12px;border-bottom:1.5px solid var(--border);flex-wrap:wrap;flex-shrink:0;background:var(--bg)}
+.sm-tool{padding:5px 10px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--surf);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;color:var(--text);transition:.12s;white-space:nowrap}
+.sm-tool:hover,.sm-tool.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.sm-tool.danger{border-color:#FECACA;color:var(--red)}.sm-tool.danger:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.sm-canvas-wrap{flex:1;overflow:hidden;position:relative;background:#f8f9fa}
+#sm-canvas{display:block;cursor:crosshair;touch-action:none}
+.sm-ai-bar{padding:10px 12px;border-top:1.5px solid var(--border);display:flex;gap:7px;flex-shrink:0;background:var(--bg)}
+.sm-ai-bar input{flex:1;font-size:12px;padding:7px 10px}
+.sm-ai-go{padding:7px 14px;border-radius:var(--rs);border:none;background:linear-gradient(135deg,#6366F1,#8B5CF6);color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.sm-footer{padding:10px 12px;border-top:1.5px solid var(--border);display:flex;gap:7px;justify-content:flex-end;flex-shrink:0}
+.sm-insert{padding:9px 18px;border-radius:var(--rs);border:none;background:var(--blue);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.sm-cancel{padding:9px 14px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--surf);font-family:inherit;font-size:13px;cursor:pointer;color:var(--text)}
+
+/* Schema in cell */
+.cell-schema-wrap{margin-top:6px;border:1.5px dashed var(--border);border-radius:var(--rs);overflow:hidden;position:relative;background:#fafbff}
+.cell-schema-wrap img,.cell-schema-wrap svg{width:100%;display:block}
+.schema-del{position:absolute;top:4px;right:4px;background:var(--red);border:none;border-radius:4px;width:20px;height:20px;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:.15s}
+.cell-schema-wrap:hover .schema-del{opacity:1}
+
 </style>
 </head>
 <body>
@@ -296,7 +359,7 @@ textarea{resize:vertical;min-height:68px;line-height:1.6}
     <div class="hi">
       <div class="hero-badge">✨ Assistant IA intégré</div>
       <div class="hero-h1">Créez vos <em>fiches de leçon</em><br>en quelques minutes</div>
-      <div class="hero-sub">Toutes matières · Collège & Lycée · Export PDF · Bibliothèque · Claude AI</div>
+      <div class="hero-sub">Toutes matières · Collège & Lycée · Export PDF · Bibliothèque · Prof Donatien</div>
       <div class="hero-btns">
         <button class="btn-p" onclick="newFiche()">✏️ Nouvelle fiche</button>
         <button class="btn-s" onclick="showPage('library')">📚 Mes fiches</button>
@@ -545,6 +608,79 @@ textarea{resize:vertical;min-height:68px;line-height:1.6}
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
+<!-- ══ CELL AI MODAL ══ -->
+<div class="cell-modal-bg" id="cell-modal-bg">
+  <div class="cell-modal">
+    <div class="cm-head">
+      <div class="cm-ico">✨</div>
+      <div class="cm-title" id="cm-title">Améliorer la cellule</div>
+      <button class="cm-close" onclick="closeCellModal()">×</button>
+    </div>
+    <div class="cm-body">
+      <div class="cm-current-lbl">Contenu actuel</div>
+      <div class="cm-current" id="cm-current"></div>
+      <div class="cm-actions">
+        <button class="cm-act" onclick="cellAI('Améliore ce contenu pédagogiquement')">✨ Améliorer</button>
+        <button class="cm-act" onclick="cellAI('Réécris ce contenu de façon plus claire et structurée')">✏️ Réécrire</button>
+        <button class="cm-act" onclick="cellAI('Enrichis ce contenu avec plus de détails et exemples')">📚 Enrichir</button>
+        <button class="cm-act" onclick="cellAI('Simplifie ce contenu pour le rendre plus accessible aux élèves')">✂️ Simplifier</button>
+        <button class="cm-act" onclick="cellAI('Formate ce contenu avec des tirets et une structure claire')">📋 Structurer</button>
+        <button class="cm-act" onclick="cellAI('Ajoute des questions pour animer la classe')">❓ Ajouter questions</button>
+      </div>
+      <div class="cm-desc-row">
+        <input type="text" id="cm-desc" placeholder="Décrivez ce que vous voulez... Ex: ajouter un exemple concret">
+        <button class="cm-go" id="cm-go-btn" onclick="cellAICustom()">Envoyer</button>
+      </div>
+      <div class="cm-spin" id="cm-spin"><div class="spin"></div>Claude améliore...</div>
+      <div class="cm-result" id="cm-result"></div>
+      <div class="cm-apply-row" id="cm-apply-row">
+        <button class="cm-apply" onclick="applyCellResult()">✅ Appliquer dans la cellule</button>
+        <button class="cm-discard" onclick="discardCellResult()">Annuler</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCHEMA MODAL ══ -->
+<div class="schema-modal-bg" id="schema-modal-bg">
+  <div class="schema-modal">
+    <div class="sm-head">
+      <div class="sm-title">✏️ Éditeur de schéma</div>
+      <button class="sm-close" onclick="closeSchemaModal()">×</button>
+    </div>
+    <div class="sm-toolbar">
+      <button class="sm-tool active" id="tool-rect" onclick="setTool('rect')">⬜ Rectangle</button>
+      <button class="sm-tool" id="tool-circle" onclick="setTool('circle')">⭕ Cercle</button>
+      <button class="sm-tool" id="tool-arrow" onclick="setTool('arrow')">→ Flèche</button>
+      <button class="sm-tool" id="tool-text" onclick="setTool('text')">T Texte</button>
+      <button class="sm-tool" id="tool-select" onclick="setTool('select')">☝ Sélect.</button>
+      <span style="flex:1"></span>
+      <button class="sm-tool" onclick="schemaUndo()">↩ Annuler</button>
+      <button class="sm-tool danger" onclick="schemaClear()">🗑 Effacer tout</button>
+      <select id="sm-template" onchange="applyTemplate(this.value)" style="padding:5px 8px;border-radius:var(--rs);border:1.5px solid var(--border);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer">
+        <option value="">📋 Modèles...</option>
+        <option value="cycle">♻️ Cycle</option>
+        <option value="organigramme">🏢 Organigramme</option>
+        <option value="tableau2x2">📊 Tableau 2×2</option>
+        <option value="chaine">⛓ Chaîne</option>
+        <option value="cause-effet">↔️ Cause → Effet</option>
+        <option value="pyramide">🔺 Pyramide</option>
+      </select>
+    </div>
+    <div class="sm-canvas-wrap" id="sm-canvas-wrap">
+      <canvas id="sm-canvas" width="700" height="400"></canvas>
+    </div>
+    <div class="sm-ai-bar">
+      <input type="text" id="sm-ai-input" placeholder="✨ Décrivez un schéma à générer... Ex: cycle de photosynthèse avec 4 étapes">
+      <button class="sm-ai-go" onclick="generateSchema()">Générer IA</button>
+    </div>
+    <div class="sm-footer">
+      <button class="sm-cancel" onclick="closeSchemaModal()">Annuler</button>
+      <button class="sm-insert" onclick="insertSchema()">✅ Insérer dans la cellule</button>
+    </div>
+  </div>
+</div>
 
 <!-- ══ AI CONNECTION MODAL ══ -->
 <div class="ai-modal-bg" id="ai-modal-bg">
@@ -806,23 +942,42 @@ function collectRows(){
     ens:  (document.getElementById('re-'+r.id)||{}).value||r.ens||'',
     app:  (document.getElementById('ra-'+r.id)||{}).value||r.app||'',
     tr:   (document.getElementById('rt-'+r.id)||{}).value||r.tr||'',
+    schema_plan: r.schema_plan||'',
+    schema_ens:  r.schema_ens||'',
+    schema_app:  r.schema_app||'',
+    schema_tr:   r.schema_tr||'',
   }));
 }
 function renderRows(){
-  document.getElementById('rows-wrap').innerHTML = rows.map((r,i)=>`
+  document.getElementById('rows-wrap').innerHTML = rows.map((r,i)=>{
+    const cells=[
+      {key:'plan',id:'rp-'+r.id,lbl:'Plan du cours',ph:'Ex: I-Définition\nII-Outils...',val:r.plan||''},
+      {key:'ens', id:'re-'+r.id,lbl:'Activités Enseignant',ph:'Ex: -Quelle activité avons-nous ?\n-Écrire la situation...',val:r.ens||''},
+      {key:'app', id:'ra-'+r.id,lbl:'Activités Apprenants',ph:'Ex: -(ils répondent)\n-(ils s\'exécutent)',val:r.app||''},
+      {key:'tr',  id:'rt-'+r.id,lbl:'Traces Écrites',ph:'Ex: I-Définition\nUn texte argumentatif est...',val:r.tr||''},
+    ];
+    const cellsHtml = cells.map(c=>`
+      <div class="fld">
+        <label>${c.lbl}</label>
+        <div class="cell-wrap">
+          <textarea id="${c.id}" rows="5" placeholder="${c.ph}">${c.val}</textarea>
+        </div>
+        <button class="cell-ai-btn" onclick="openCellModal('${r.id}','${c.key}','${c.lbl}')">✨ Améliorer avec l'IA</button>
+        <div class="cell-schema-wrap" id="schema-${r.id}-${c.key}" style="display:${r['schema_'+c.key]?'block':'none'}">
+          ${r['schema_'+c.key]?`<img src="${r['schema_'+c.key]}" alt="schéma"><button class="schema-del" onclick="deleteSchema('${r.id}','${c.key}')">×</button>`:''}
+        </div>
+        <button style="margin-top:4px;padding:3px 9px;border-radius:20px;border:1.5px dashed var(--border);background:none;font-size:10px;color:var(--muted);cursor:pointer;font-family:inherit" onclick="openSchemaModal('${r.id}','${c.key}')">＋ Ajouter un schéma</button>
+      </div>`).join('');
+    return `
     <div class="row-card" id="rc-${r.id}">
       <div class="row-hd">
         <div class="row-num">${i+1}</div>
         <div class="row-lbl">Ligne ${i+1}</div>
         <button class="row-del" onclick="removeRow('${r.id}')">×</button>
       </div>
-      <div class="row-cols">
-        <div class="fld"><label>Plan du cours</label><textarea id="rp-${r.id}" rows="5" placeholder="Ex: I-Définition&#10;II-Outils...">${r.plan||''}</textarea></div>
-        <div class="fld"><label>Activités Enseignant</label><textarea id="re-${r.id}" rows="5" placeholder="Ex: -Quelle activité avons-nous ?&#10;-Écrire la situation...">${r.ens||''}</textarea></div>
-        <div class="fld"><label>Activités Apprenants</label><textarea id="ra-${r.id}" rows="5" placeholder="Ex: -(ils répondent)&#10;-(ils s'exécutent)">${r.app||''}</textarea></div>
-        <div class="fld"><label>Traces Écrites</label><textarea id="rt-${r.id}" rows="5" placeholder="Ex: I-Définition&#10;Un texte argumentatif est...">${r.tr||''}</textarea></div>
-      </div>
-    </div>`).join('');
+      <div class="row-cols">${cellsHtml}</div>
+    </div>`;
+  }).join('');
 }
 
 /* ═══════════════════════════════ PREVIEW ════════════════════════════════ */
@@ -836,13 +991,15 @@ function renderFiche(f){
   const d=f.dt?new Date(f.dt+'T12:00:00').toLocaleDateString('fr-FR'):'___________';
   const qs=(f.qs||'').split('\n').filter(Boolean).map(q=>`<div>${q}</div>`).join('');
   // *** FIX: render ALL rows, not just last ***
-  const rowsHtml=(f.rows||[]).map(r=>`
-    <tr>
-      <td class="col-plan">${esc(r.plan||'')}</td>
-      <td class="col-ens">${esc(r.ens||'')}</td>
-      <td class="col-app">${esc(r.app||'')}</td>
-      <td class="col-tr">${esc(r.tr||'')}</td>
-    </tr>`).join('');
+  const rowsHtml=(f.rows||[]).map(r=>{
+    const schemaCell=(key)=>r['schema_'+key]?`<div style="margin-top:4px"><img src="${r['schema_'+key]}" style="width:100%;border-radius:3px" alt="schéma"></div>`:'';
+    return `<tr>
+      <td class="col-plan">${esc(r.plan||'')}${schemaCell('plan')}</td>
+      <td class="col-ens">${esc(r.ens||'')}${schemaCell('ens')}</td>
+      <td class="col-app">${esc(r.app||'')}${schemaCell('app')}</td>
+      <td class="col-tr">${esc(r.tr||'')}${schemaCell('tr')}</td>
+    </tr>`;
+  }).join('');
   document.getElementById('fiche-out').innerHTML=`
     <div class="fh">
       <p>DATE : ${d}</p>
@@ -1211,6 +1368,374 @@ function toast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('on');
   setTimeout(()=>t.classList.remove('on'),2400);
+}
+
+
+/* ═══════════════════════════════ CELL AI ════════════════════════════════ */
+let cellTarget = null; // {rowId, cellKey, label}
+
+function openCellModal(rowId, cellKey, label){
+  if(!isAIReady()){ openAIModal(); return; }
+  cellTarget = {rowId, cellKey, label};
+  const taId = {plan:'rp-',ens:'re-',app:'ra-',tr:'rt-'}[cellKey]+rowId;
+  const current = (document.getElementById(taId)||{}).value||'';
+  document.getElementById('cm-title').textContent = label + ' — Ligne '+(rows.findIndex(r=>r.id===rowId)+1);
+  document.getElementById('cm-current').textContent = current||'(vide)';
+  document.getElementById('cm-result').classList.remove('on');
+  document.getElementById('cm-apply-row').classList.remove('on');
+  document.getElementById('cm-desc').value = '';
+  document.getElementById('cell-modal-bg').classList.add('open');
+}
+function closeCellModal(){ document.getElementById('cell-modal-bg').classList.remove('open'); cellTarget=null; }
+document.getElementById('cell-modal-bg').addEventListener('click',function(e){if(e.target===this)closeCellModal();});
+
+async function cellAI(instruction){
+  if(!cellTarget) return;
+  const taId = {plan:'rp-',ens:'re-',app:'ra-',tr:'rt-'}[cellTarget.cellKey]+cellTarget.rowId;
+  const current = (document.getElementById(taId)||{}).value||'';
+  const mat = document.getElementById('f-mat').value;
+  const sea = document.getElementById('f-sea').value;
+  await runCellAI(instruction, current, mat, sea, cellTarget.label);
+}
+async function cellAICustom(){
+  const desc = document.getElementById('cm-desc').value.trim();
+  if(!desc){ toast('Décrivez ce que vous souhaitez'); return; }
+  await cellAI(desc);
+}
+async function runCellAI(instruction, current, mat, sea, label){
+  document.getElementById('cm-go-btn').disabled = true;
+  document.getElementById('cm-spin').classList.add('on');
+  document.getElementById('cm-result').classList.remove('on');
+  document.getElementById('cm-apply-row').classList.remove('on');
+  try{
+    const prompt = `Matière: ${mat||'—'}, Séance: ${sea||'—'}
+Colonne du tableau: "${label}"
+Contenu actuel:
+${current||'(vide)'}
+
+Instruction: ${instruction}
+
+Fournis uniquement le nouveau contenu de la cellule, sans explication ni commentaire. Garde le même style que la colonne (${label}).`;
+    const result = await callAI(prompt, `Tu es un expert en pédagogie pour l'enseignement secondaire en Afrique francophone. Tu améliores des contenus de fiches de cours selon les instructions. Réponds en français, uniquement avec le contenu demandé.`);
+    document.getElementById('cm-spin').classList.remove('on');
+    document.getElementById('cm-result').textContent = result;
+    document.getElementById('cm-result').classList.add('on');
+    document.getElementById('cm-apply-row').classList.add('on');
+  }catch(e){
+    document.getElementById('cm-spin').classList.remove('on');
+    document.getElementById('cm-result').textContent = '⚠️ '+e.message;
+    document.getElementById('cm-result').classList.add('on');
+    if(e.message&&e.message.includes('Connectez')) openAIModal();
+  }
+  document.getElementById('cm-go-btn').disabled = false;
+}
+function applyCellResult(){
+  if(!cellTarget) return;
+  const result = document.getElementById('cm-result').textContent;
+  const taId = {plan:'rp-',ens:'re-',app:'ra-',tr:'rt-'}[cellTarget.cellKey]+cellTarget.rowId;
+  const ta = document.getElementById(taId);
+  if(ta){ ta.value = result; }
+  toast('Contenu mis à jour ✓');
+  closeCellModal();
+}
+function discardCellResult(){
+  document.getElementById('cm-result').classList.remove('on');
+  document.getElementById('cm-apply-row').classList.remove('on');
+}
+
+/* ═══════════════════════════════ SCHEMA EDITOR ══════════════════════════ */
+let schemaTool = 'rect';
+let schemaTarget = null; // {rowId, cellKey}
+let schemaShapes = [];
+let schemaHistory = [];
+let smCanvas, smCtx;
+let smDrawing = false, smStart = {x:0,y:0}, smCurrent = null;
+let smSelected = null;
+
+const TEMPLATES = {
+  cycle:[
+    {type:'rect',x:280,y:30,w:140,h:44,text:'Étape 1',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'rect',x:480,y:130,w:140,h:44,text:'Étape 2',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'rect',x:280,y:240,w:140,h:44,text:'Étape 3',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'rect',x:80,y:130,w:140,h:44,text:'Étape 4',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'arrow',x1:350,y1:74,x2:480,y2:130},{type:'arrow',x1:550,y1:174,x2:420,y2:240},
+    {type:'arrow',x1:350,y1:240,x2:220,y2:174},{type:'arrow',x1:150,y1:130,x2:280,y2:74}
+  ],
+  organigramme:[
+    {type:'rect',x:250,y:20,w:200,h:44,text:'Direction',fill:'#1B3A6B',stroke:'#1B3A6B',textColor:'#fff'},
+    {type:'rect',x:80,y:120,w:150,h:44,text:'Service A',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'rect',x:280,y:120,w:150,h:44,text:'Service B',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'rect',x:480,y:120,w:150,h:44,text:'Service C',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'arrow',x1:350,y1:64,x2:155,y2:120},{type:'arrow',x1:350,y1:64,x2:355,y2:120},
+    {type:'arrow',x1:350,y1:64,x2:555,y2:120}
+  ],
+  'tableau2x2':[
+    {type:'rect',x:50,y:50,w:280,h:160,text:'',fill:'#EFF6FF',stroke:'#2563EB'},
+    {type:'rect',x:370,y:50,w:280,h:160,text:'',fill:'#F0FDF4',stroke:'#16A34A'},
+    {type:'rect',x:50,y:230,w:280,h:160,text:'',fill:'#FEF3C7',stroke:'#D97706'},
+    {type:'rect',x:370,y:230,w:280,h:160,text:'',fill:'#FEE2E2',stroke:'#DC2626'},
+    {type:'text',x:190,y:130,text:'Zone 1'},{type:'text',x:510,y:130,text:'Zone 2'},
+    {type:'text',x:190,y:310,text:'Zone 3'},{type:'text',x:510,y:310,text:'Zone 4'}
+  ],
+  chaine:[
+    {type:'rect',x:30,y:160,w:110,h:44,text:'Étape 1',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'rect',x:190,y:160,w:110,h:44,text:'Étape 2',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'rect',x:350,y:160,w:110,h:44,text:'Étape 3',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'rect',x:510,y:160,w:110,h:44,text:'Étape 4',fill:'#DBEAFE',stroke:'#2563EB'},
+    {type:'arrow',x1:140,y1:182,x2:190,y2:182},{type:'arrow',x1:300,y1:182,x2:350,y2:182},
+    {type:'arrow',x1:460,y1:182,x2:510,y2:182}
+  ],
+  'cause-effet':[
+    {type:'rect',x:30,y:160,w:180,h:50,text:'Cause',fill:'#FEE2E2',stroke:'#DC2626'},
+    {type:'rect',x:490,y:160,w:180,h:50,text:'Effet',fill:'#DCFCE7',stroke:'#16A34A'},
+    {type:'arrow',x1:210,y1:185,x2:490,y2:185},
+    {type:'text',x:350,y:175,text:'entraîne'}
+  ],
+  pyramide:[
+    {type:'rect',x:275,y:20,w:150,h:44,text:'Niveau 1',fill:'#FEE2E2',stroke:'#DC2626'},
+    {type:'rect',x:200,y:100,w:300,h:44,text:'Niveau 2',fill:'#FEF3C7',stroke:'#D97706'},
+    {type:'rect',x:100,y:180,w:500,h:44,text:'Niveau 3',fill:'#DCFCE7',stroke:'#16A34A'},
+    {type:'rect',x:30,y:260,w:640,h:44,text:'Niveau 4 (base)',fill:'#DBEAFE',stroke:'#2563EB'}
+  ]
+};
+
+function openSchemaModal(rowId, cellKey){
+  schemaTarget = {rowId, cellKey};
+  const r = rows.find(x=>x.id===rowId);
+  // Load existing schema if any (try to restore shapes from data url - start fresh for simplicity)
+  schemaShapes = [];
+  schemaHistory = [];
+  initCanvas();
+  redrawCanvas();
+  document.getElementById('schema-modal-bg').classList.add('open');
+}
+function closeSchemaModal(){ document.getElementById('schema-modal-bg').classList.remove('open'); schemaTarget=null; }
+document.getElementById('schema-modal-bg').addEventListener('click',function(e){if(e.target===this)closeSchemaModal();});
+
+function initCanvas(){
+  smCanvas = document.getElementById('sm-canvas');
+  const wrap = document.getElementById('sm-canvas-wrap');
+  const w = Math.min(700, wrap.offsetWidth||700);
+  smCanvas.width = w; smCanvas.height = 400;
+  smCtx = smCanvas.getContext('2d');
+  smCanvas.onmousedown = smPointerDown;
+  smCanvas.onmousemove = smPointerMove;
+  smCanvas.onmouseup   = smPointerUp;
+  smCanvas.ontouchstart= e=>{e.preventDefault();smPointerDown(e.touches[0]);};
+  smCanvas.ontouchmove = e=>{e.preventDefault();smPointerMove(e.touches[0]);};
+  smCanvas.ontouchend  = e=>{e.preventDefault();smPointerUp(e.changedTouches[0]);};
+}
+
+function getPos(e){
+  const r = smCanvas.getBoundingClientRect();
+  const scaleX = smCanvas.width / r.width;
+  const scaleY = smCanvas.height / r.height;
+  return {x:(e.clientX-r.left)*scaleX, y:(e.clientY-r.top)*scaleY};
+}
+
+function setTool(t){
+  schemaTool=t;
+  document.querySelectorAll('.sm-tool[id^="tool-"]').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('tool-'+t);
+  if(el) el.classList.add('active');
+  smCanvas.style.cursor = t==='text'?'text':t==='select'?'default':'crosshair';
+}
+
+function smPointerDown(e){
+  const p=getPos(e); smDrawing=true; smStart={...p};
+  if(schemaTool==='text'){
+    const txt=prompt('Texte :','');
+    if(txt){ pushHistory(); schemaShapes.push({type:'text',x:p.x,y:p.y,text:txt}); redrawCanvas(); }
+    smDrawing=false; return;
+  }
+  if(schemaTool==='select'){
+    smSelected=null;
+    for(let i=schemaShapes.length-1;i>=0;i--){
+      if(hitTest(schemaShapes[i],p)){smSelected=i;break;}
+    }
+    redrawCanvas(); smDrawing=!!smSelected&&smSelected!==null; return;
+  }
+  smCurrent = {type:schemaTool,x:p.x,y:p.y,x1:p.x,y1:p.y,x2:p.x,y2:p.y,w:0,h:0,text:schemaTool==='rect'?'Texte':'',fill:'#DBEAFE',stroke:'#2563EB'};
+}
+
+function smPointerMove(e){
+  if(!smDrawing) return;
+  const p=getPos(e);
+  if(schemaTool==='select' && smSelected!==null){
+    const s=schemaShapes[smSelected];
+    const dx=p.x-smStart.x, dy=p.y-smStart.y;
+    smStart={...p};
+    if(s.type==='arrow'){s.x1+=dx;s.y1+=dy;s.x2+=dx;s.y2+=dy;}
+    else if(s.type==='text'){s.x+=dx;s.y+=dy;}
+    else{s.x+=dx;s.y+=dy;}
+    redrawCanvas(); return;
+  }
+  if(!smCurrent) return;
+  smCurrent.x2=p.x; smCurrent.y2=p.y;
+  smCurrent.w=p.x-smStart.x; smCurrent.h=p.y-smStart.y;
+  redrawCanvas();
+  drawShape(smCurrent, true);
+}
+
+function smPointerUp(e){
+  if(!smDrawing){smDrawing=false;return;}
+  smDrawing=false;
+  if(schemaTool==='select'){smSelected=null;return;}
+  if(!smCurrent) return;
+  const s={...smCurrent};
+  if((s.type==='rect'||s.type==='circle') && Math.abs(s.w)<10 && Math.abs(s.h)<10){smCurrent=null;return;}
+  if(s.type==='arrow' && Math.abs(s.x2-s.x1)<10 && Math.abs(s.y2-s.y1)<10){smCurrent=null;return;}
+  // Normalize negative dimensions
+  if(s.type==='rect'||s.type==='circle'){
+    if(s.w<0){s.x+=s.w;s.w=-s.w;}
+    if(s.h<0){s.y+=s.h;s.h=-s.h;}
+  }
+  if(s.type==='rect'){
+    const txt=prompt('Texte (laisser vide pour aucun):','');
+    s.text=txt||'';
+  }
+  pushHistory();
+  schemaShapes.push(s);
+  smCurrent=null;
+  redrawCanvas();
+}
+
+function hitTest(s,p){
+  if(s.type==='text') return Math.abs(p.x-s.x)<60 && Math.abs(p.y-s.y)<20;
+  if(s.type==='arrow') return false;
+  return p.x>=s.x&&p.x<=s.x+s.w&&p.y>=s.y&&p.y<=s.y+s.h;
+}
+
+function drawShape(s, preview=false){
+  const ctx=smCtx;
+  ctx.save();
+  if(preview){ctx.globalAlpha=0.6;}
+  if(s.type==='rect'){
+    ctx.fillStyle=s.fill||'#DBEAFE';
+    ctx.strokeStyle=s.stroke||'#2563EB';
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.roundRect(s.x,s.y,s.w,s.h,6);
+    ctx.fill(); ctx.stroke();
+    if(s.text){
+      ctx.fillStyle=s.textColor||'#1e3a6e';
+      ctx.font='bold 13px Arial';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText(s.text, s.x+s.w/2, s.y+s.h/2, s.w-10);
+    }
+  } else if(s.type==='circle'){
+    const rx=(s.x2||s.x+s.w)-s.x, ry=(s.y2||s.y+s.h)-s.y;
+    const cx=s.x+rx/2, cy=s.y+ry/2;
+    ctx.fillStyle=s.fill||'#DCFCE7';
+    ctx.strokeStyle=s.stroke||'#16A34A';
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.ellipse(cx,cy,Math.abs(rx)/2,Math.abs(ry)/2,0,0,Math.PI*2);
+    ctx.fill(); ctx.stroke();
+  } else if(s.type==='arrow'){
+    const dx=s.x2-s.x1, dy=s.y2-s.y1;
+    const len=Math.sqrt(dx*dx+dy*dy);
+    if(len<1){ctx.restore();return;}
+    const angle=Math.atan2(dy,dx);
+    ctx.strokeStyle='#374151'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(s.x1,s.y1); ctx.lineTo(s.x2,s.y2); ctx.stroke();
+    const hs=10;
+    ctx.beginPath();
+    ctx.moveTo(s.x2-hs*Math.cos(angle-0.4),s.y2-hs*Math.sin(angle-0.4));
+    ctx.lineTo(s.x2,s.y2);
+    ctx.lineTo(s.x2-hs*Math.cos(angle+0.4),s.y2-hs*Math.sin(angle+0.4));
+    ctx.stroke();
+  } else if(s.type==='text'){
+    ctx.fillStyle=s.color||'#0F172A';
+    ctx.font=(s.bold?'bold ':'')+'13px Arial';
+    ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillText(s.text||'',s.x,s.y);
+  }
+  ctx.restore();
+}
+
+function redrawCanvas(){
+  if(!smCtx) return;
+  smCtx.clearRect(0,0,smCanvas.width,smCanvas.height);
+  smCtx.fillStyle='#f8f9fa';
+  smCtx.fillRect(0,0,smCanvas.width,smCanvas.height);
+  schemaShapes.forEach((s,i)=>{
+    drawShape(s);
+    if(i===smSelected){
+      smCtx.save();
+      smCtx.strokeStyle='#6366F1';
+      smCtx.lineWidth=2;
+      smCtx.setLineDash([4,3]);
+      if(s.type==='rect') smCtx.strokeRect(s.x-3,s.y-3,s.w+6,s.h+6);
+      smCtx.restore();
+    }
+  });
+}
+
+function pushHistory(){ schemaHistory.push(JSON.stringify(schemaShapes)); if(schemaHistory.length>30) schemaHistory.shift(); }
+function schemaUndo(){ if(schemaHistory.length){ schemaShapes=JSON.parse(schemaHistory.pop()); redrawCanvas(); } }
+function schemaClear(){ if(confirm('Effacer tout le schéma ?')){ pushHistory(); schemaShapes=[]; redrawCanvas(); } }
+
+function applyTemplate(name){
+  if(!name) return;
+  if(schemaShapes.length && !confirm('Remplacer le schéma actuel ?')){ document.getElementById('sm-template').value=''; return; }
+  pushHistory();
+  schemaShapes = JSON.parse(JSON.stringify(TEMPLATES[name]||[]));
+  redrawCanvas();
+  document.getElementById('sm-template').value='';
+}
+
+async function generateSchema(){
+  const desc = document.getElementById('sm-ai-input').value.trim();
+  if(!desc){ toast('Décrivez le schéma à générer'); return; }
+  if(!isAIReady()){ openAIModal(); return; }
+  const btn = document.querySelector('.sm-ai-go');
+  btn.textContent='⏳ Génération...'; btn.disabled=true;
+  try{
+    const prompt = `Génère un schéma pédagogique pour: "${desc}"
+
+Réponds UNIQUEMENT en JSON valide (tableau de formes), sans markdown:
+[
+  {"type":"rect","x":100,"y":50,"w":150,"h":44,"text":"Titre","fill":"#DBEAFE","stroke":"#2563EB"},
+  {"type":"arrow","x1":250,"y1":72,"x2":350,"y2":72},
+  {"type":"text","x":200,"y":30,"text":"Titre schéma"},
+  {"type":"circle","x":50,"y":100,"w":80,"h":80,"fill":"#DCFCE7","stroke":"#16A34A"}
+]
+Contraintes: canvas 700x400px. Utilise des couleurs harmonieuses. Max 10-12 formes. Texte court dans les rectangles (max 3 mots). Formes bien espacées.`;
+    const result = await callAI(prompt, 'Tu génères des schémas pédagogiques en JSON. Réponds uniquement avec un tableau JSON valide.');
+    const m = result.match(/\[[\s\S]*\]/);
+    if(!m) throw new Error('Format JSON invalide');
+    pushHistory();
+    schemaShapes = JSON.parse(m[0]);
+    redrawCanvas();
+    toast('Schéma généré !');
+  }catch(e){
+    toast('Erreur: '+e.message);
+    console.error(e);
+  }
+  btn.textContent='Générer IA'; btn.disabled=false;
+}
+
+function insertSchema(){
+  if(!schemaTarget) return;
+  if(schemaShapes.length===0){ toast('Le schéma est vide'); return; }
+  redrawCanvas();
+  const dataUrl = smCanvas.toDataURL('image/png');
+  const {rowId, cellKey} = schemaTarget;
+  const ri = rows.findIndex(r=>r.id===rowId);
+  if(ri>=0){ rows=collectRows(); rows[ri]['schema_'+cellKey]=dataUrl; }
+  renderRows();
+  closeSchemaModal();
+  toast('Schéma inséré ✓');
+}
+
+function deleteSchema(rowId, cellKey){
+  const ri = rows.findIndex(r=>r.id===rowId);
+  rows=collectRows();
+  if(ri>=0){ rows[ri]['schema_'+cellKey]=''; }
+  renderRows();
+  toast('Schéma supprimé');
 }
 
 /* ═══════════════════════════════ EXPORT / IMPORT ════════════════════════ */
