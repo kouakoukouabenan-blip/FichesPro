@@ -780,6 +780,14 @@ function afficherFiche(f) {
 }
 
 /* Retouche de la fiche par une consigne */
+/* Zone de modification : plusieurs lignes, Entrée = retour à la ligne, la zone s'agrandit avec le texte
+   (Ctrl/Cmd + Entrée envoie, pratique sur ordinateur) */
+(() => {
+  const z = $("#retouche-texte");
+  const ajuster = () => { z.style.height = "auto"; z.style.height = Math.min(z.scrollHeight + 2, innerHeight * 0.5) + "px"; };
+  z.addEventListener("input", ajuster);
+  z.addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $("#retouche").requestSubmit(); } });
+})();
 $("#retouche").onsubmit = async e => {
   e.preventDefault();
   const consigne = $("#retouche-texte").value.trim();
@@ -802,7 +810,7 @@ Applique la consigne et renvoie la fiche COMPLÈTE modifiée (toutes les rubriqu
     $("#fiche").innerHTML = ficheCourante.html;
     if (modeTraces) afficherTraces(true);
     if (ficheCourante.eleves) { ficheCourante.eleves.html = ELEVES.construire(ficheCourante, ficheCourante.eleves.choix, ficheCourante.eleves.copies, ficheCourante.eleves.groupe).html; sauverHistorique(ficheCourante); ELEVES.afficher(ficheCourante); }
-    $("#retouche-texte").value = "";
+    $("#retouche-texte").value = ""; $("#retouche-texte").style.height = "";
     signaler("Fiche modifiée");
   } catch (err) {
     VOILE.fermer();

@@ -96,9 +96,6 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--vert-clair);bord
 .boutons{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .boutons>button{background:#fff;border:1px solid var(--ligne);border-radius:9px;padding:9px 12px;font-weight:500}
 .boutons>button.accent{background:var(--ocre);color:#fff;border-color:var(--ocre)}
-.retouche{display:flex;gap:8px;margin:4px 0 8px}
-.retouche input{flex:1;min-width:0}
-.retouche .principal{padding:10px 16px;white-space:nowrap}
 @media(max-width:640px){
   .outils h2{font-size:17px}
   .boutons{width:100%}
@@ -480,9 +477,8 @@ html.voile-actif,html.voile-actif body{overflow:hidden}
 }
 .retouche{display:grid;gap:6px;margin:16px 0 8px;background:var(--carte);border:1px solid var(--ligne);border-radius:var(--rayon);padding:14px}
 .retouche>label{font-weight:600;color:var(--vert);font-size:15px}
-.retouche-ligne{display:flex;gap:8px}
-.retouche-ligne input{flex:1;min-width:0}
-.retouche-ligne .principal{padding:10px 16px;white-space:nowrap}
+.retouche textarea{width:100%;min-height:110px;max-height:50vh;resize:vertical;line-height:1.45;font:inherit}
+.retouche .principal{width:100%}
 
 /* Mes fiches : un cahier par classe */
 .filtre-classes{display:flex;gap:6px;flex-wrap:wrap}
