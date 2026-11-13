@@ -730,6 +730,7 @@ function ficheExistante(req) {
   const genre = req.genre === "devoir" ? "devoir" : "fiche";
   const a = motsTitre(req.titre);
   return HISTO.find(f => {
+    if (!f || !f.req || !f.req.titre) return false;          // anciennes entrées incomplètes : ignorées
     if ((f.genre || "fiche") !== genre || f.req.matiere !== req.matiere || f.req.classe !== req.classe) return false;
     if (genre === "fiche" && f.req.activite !== req.activite) return false;
     if (genre === "devoir" && (f.req.typeEval || "") !== (req.typeEval || "")) return false;
@@ -761,7 +762,11 @@ function demanderDoublon(req, f) {
   dlg.showModal();
 }
 async function generer(req, o = {}) {
-  if (!o.force && !o.remplace) { const f = ficheExistante(req); if (f) return demanderDoublon(req, f); }
+  if (!o.force && !o.remplace) {
+    let f = null;
+    try { f = ficheExistante(req); } catch (err) { console.warn("Vérification des fiches existantes impossible :", err); }
+    if (f && $("#dlg-doublon")) return demanderDoublon(req, f);
+  }
   LS.set("fc_dernier", req);
   const devoir = req.genre === "devoir";
   const bouton = $("#generer"); bouton.disabled = true;
@@ -1078,6 +1083,7 @@ async function chargerHistorique() {
     console.warn("Historique en mode secours :", err);
     HISTO = LS.get("fc_historique", []);
   }
+  HISTO = HISTO.filter(f => f && f.req && typeof f.req.titre === "string" && f.html);   // entrées incomplètes ignorées
   if (!$("#vue-historique").hidden) afficherHistorique();
 }
 window.addEventListener("donnees-restaurees", chargerHistorique);
