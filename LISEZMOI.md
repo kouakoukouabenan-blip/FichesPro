@@ -100,7 +100,7 @@ puis une ligne `<script src="base/…"></script>` dans `index.html`
 
 Glisse le dossier entier sur https://app.netlify.com/drop.
 Après chaque ajout de documents : change `VERSION` dans `sw.js`
-(`fiches-v29` → `fiches-v30`…) puis redéploie, pour que les téléphones
+(`fiches-v30` → `fiches-v31`…) puis redéploie, pour que les téléphones
 récupèrent la nouvelle base.
 
 ## 5. Règles envoyées à l'IA (`js/regles.js`)
@@ -121,7 +121,7 @@ Lecture méthodique : l'hypothèse générale suit la forme « type + tonalité 
 - **Nouvelle fiche** : matière, classe, activité, titre, puis **Générer**. Après chaque génération réussie, le formulaire se vide de ce qui est propre à la leçon (titre, semaine, consignes, texte support, plan, modèle choisi). Il garde la matière, la classe, l'activité, la durée, l'établissement, le professeur et l'orientation. **Tout effacer** fait la même chose à la main.
   - Indiquer la **semaine** aide l'appli à retrouver la séance exacte.
   - **Orientation** : portrait ou paysage. Le choix s'applique à l'aperçu, au PDF et au fichier Word, et peut être changé après coup sur la fiche.
-  - **Consignes pour l'IA** : un petit texte libre (« situation en milieu rural », « deux exercices »…), ou les boutons de consignes rapides.
+  - **Consignes pour l'IA** : un petit texte libre (« situation en milieu rural », « deux exercices »…), ou les boutons de consignes rapides. **Scanner des consignes avec l'appareil photo** photographie des notes, un sujet ou un exercice : le texte reconnu s'ajoute au champ, à relire (même bouton pour les remarques permanentes dans Réglages).
   - **Consignes permanentes** (dans Réglages) : elles sont ajoutées à chaque fiche (ex. classes nombreuses, zone rurale).
 - **Modèle à suivre** : par défaut l'appli choisit les fiches les plus proches (la meilleure est présentée comme modèle principal). Choisis une fiche dans la liste pour **imposer sa structure à la lettre** (rubriques, colonnes, durées) : le format par défaut et les autres exemples sont alors écartés.
 - **Proposer un plan d'abord** : au lieu de générer directement, touche ce bouton. L'appli propose un plan (titres et sous-titres) fondé sur la progression, les guides et les fiches exemples. Sur l'écran **Plan proposé** tu peux :

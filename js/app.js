@@ -52,25 +52,28 @@ function appliquerProfil() {
   $("#champ-matiere").hidden = mats.length === 1;
   $("#matiere").onchange && $("#matiere").onchange();
 }
-/* Texte support scanné (scanner.js) : le texte reconnu va dans le champ, à relire */
-function scannerSupport() {
+/* Scanner (scanner.js) → un champ du formulaire : le texte reconnu y est placé, à relire */
+function scannerVers(sel, { titre, aide, nom, bloc, fin = "avant de préparer la fiche" }) {
   SCANNER.ouvrir({
-    titre: "Scanner le texte support",
-    aide: "Photographie le texte <strong>page par page, dans l'ordre</strong>, bien à plat et bien éclairé, en cadrant seulement le texte (sans les pages voisines). Les retours à la ligne et les vers sont conservés.",
-    texte: true,
+    titre, aide, texte: true,
     quand(texte) {
-      const champ = $("#texte-support"), avant = champ.value.trim();
+      const champ = $(sel), avant = champ.value.trim();
       champ.value = avant && confirm("Le champ contient déjà un texte.\nOK : ajouter le texte scanné à la suite.\nAnnuler : le remplacer.") ? avant + "\n\n" + texte : texte;
-      $("#bloc-support").open = true;
-      champ.dispatchEvent(new Event("input", { bubbles: true }));
+      if (bloc) $(bloc).open = true;
+      ["input", "change"].forEach(t => champ.dispatchEvent(new Event(t, { bubbles: true })));
       champ.focus(); champ.setSelectionRange(0, 0); champ.scrollTop = 0;
       champ.scrollIntoView({ behavior: "smooth", block: "center" });
-      signaler("Texte placé dans « Mon texte support » : relis-le avant de préparer la fiche.");
+      signaler(`Texte placé dans « ${nom} » : relis-le ${fin}.`);
     }
   });
 }
+const AIDE_CONSIGNES = "Photographie tes consignes (notes, sujet, exercice, extrait du guide…) <strong>page par page</strong>, bien à plat et bien éclairées. Le texte reconnu s'ajoute au champ des remarques ; relis-le. <strong>Écrit à la main ?</strong> Choisis « En ligne » : la lecture sur le téléphone ne reconnaît bien que le texte imprimé.";
 function initFormulaire() {
-  $("#support-scanner").onclick = scannerSupport;
+  $("#support-scanner").onclick = () => scannerVers("#texte-support", { titre: "Scanner le texte support", nom: "Mon texte support", bloc: "#bloc-support",
+    aide: "Photographie le texte <strong>page par page, dans l'ordre</strong>, bien à plat et bien éclairé, en cadrant seulement le texte (sans les pages voisines). Les retours à la ligne et les vers sont conservés." });
+  $("#consignes-scanner").onclick = () => scannerVers("#consignes", { titre: "Scanner des consignes", nom: "Remarques pour cette fiche", aide: AIDE_CONSIGNES });
+  const perm = $("#consignes-permanentes-scanner");
+  if (perm) perm.onclick = () => scannerVers("#consignes-permanentes", { titre: "Scanner des remarques permanentes", nom: "Remarques permanentes", fin: "puis touche Enregistrer", aide: AIDE_CONSIGNES });
   remplirSelect($("#matiere"), PROFIL.matieres() || Object.keys(BASE.matieres));
   const maj = () => {
     const cfg = BASE.matieres[$("#matiere").value] || { classes: [], activites: [] };

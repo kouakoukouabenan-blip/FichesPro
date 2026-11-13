@@ -527,3 +527,4 @@ html.scanner-actif,html.scanner-actif body{overflow:hidden}
 .sc-pied .principal{width:100%;max-width:720px;display:block;margin:0 auto}
 .sc-pied .principal:disabled{opacity:.5}
 .b-conseil{margin:0;font-size:14px;background:#fff6e2;border-left:4px solid var(--ocre);padding:8px 10px;border-radius:0 8px 8px 0}
+.scan-lien{justify-self:start;text-align:left}
