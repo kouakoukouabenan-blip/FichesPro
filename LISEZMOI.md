@@ -100,7 +100,7 @@ puis une ligne `<script src="base/…"></script>` dans `index.html`
 
 Glisse le dossier entier sur https://app.netlify.com/drop.
 Après chaque ajout de documents : change `VERSION` dans `sw.js`
-(`fiches-v31` → `fiches-v32`…) puis redéploie, pour que les téléphones
+(`fiches-v32` → `fiches-v33`…) puis redéploie, pour que les téléphones
 récupèrent la nouvelle base.
 
 ## 5. Règles envoyées à l'IA (`js/regles.js`)
@@ -137,6 +137,7 @@ Lecture méthodique : l'hypothèse générale suit la forme « type + tonalité 
 - **Traces écrites** : colonne élargie (32 %), titres en vert, sous-titres en ocre, règles encadrées, exemples en bleu, remarques en prune. La mise en forme est appliquée automatiquement, même si l'IA l'oublie.
 - **Word** télécharge un vrai fichier `.docx` et **PDF** un vrai fichier `.pdf`. En mode paysage, la **page elle-même** est en A4 paysage (29,7 × 21 cm), avec les couleurs conservées. Les bibliothèques d'export (dossier `vendor/`) se chargent au premier export.
 - **Traces écrites** : n'affiche que les traces écrites de la fiche (la colonne du déroulement, ou les rubriques « Trace écrite », « Résumé », « Retenons »), à la suite, en portrait. Word, PDF, Partager, Imprimer et Copier portent alors sur les traces seules. **Fiche complète** revient à la fiche.
+- **Mode lecture** (bouton à quatre coins à côté de ⋯, ou ⋯ → Mode lecture) : la fiche en plein écran, sans menus. Une fiche portrait s'affiche en portrait, une fiche paysage en paysage : l'écran se verrouille dans le bon sens quand le téléphone le permet (Android) ; sinon un conseil invite à tourner le téléphone, ou « Pivoter l'affichage » tourne la page à l'écran. A− / A+ agrandissent, la barre s'efface pendant la lecture et revient au toucher. Pour quitter : ✕ ou la touche Retour du téléphone.
 - **A− / A+** : taille du texte, de 85 % à 200 %. La feuille garde sa largeur et le texte se réorganise. Le réglage ne concerne que la lecture à l'écran : Word, PDF et impression restent en taille normale. Il est retenu.
 - **Écran de génération** : sobre, avec une page qui s'écrit, « Rédaction de la fiche… » et une barre de progression. **Masquer** le referme sans arrêter la rédaction.
 - **Page élèves** (page à photocopier) : sur une fiche, ce bouton ajoute après la fiche le **texte-support**, la **situation d'apprentissage** et/ou la **situation d'évaluation** (avec une ligne « Nom et prénoms »), chacun sur sa propre page **ou tout sur une même page** (situation d'apprentissage, texte-support, puis situation d'évaluation, dans un seul exemplaire). Elle est toujours en A4 portrait, même pour une fiche en paysage. Les exemplaires sont placés côte à côte sur deux colonnes, sur autant de rangées que la page le permet (choix automatique, ou 1 à 8 par page), avec des traits de découpe. Seuls la situation, le texte et les consignes y figurent : jamais le tableau des habiletés ni les rubriques de la fiche. La page est modifiable à la main. Elle est incluse dans le Word et le PDF de la fiche, et **PDF de cette page seule** l'exporte à part. Dans le formulaire, la case « Ajouter aussi une page à photocopier » l'ajoute automatiquement à chaque fiche.

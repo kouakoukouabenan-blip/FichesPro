@@ -524,3 +524,21 @@ html.scanner-actif,html.scanner-actif body{overflow:hidden}
 .sc-pied .principal:disabled{opacity:.5}
 .b-conseil{margin:0;font-size:14px;background:#fff6e2;border-left:4px solid var(--ocre);padding:8px 10px;border-radius:0 8px 8px 0}
 .scan-lien{justify-self:start;text-align:left}
+
+/* ---------- Mode lecture (plein écran) ---------- */
+.fiche-actions .carre svg{width:22px;height:22px;display:block;margin:auto}
+html.lecture-active,html.lecture-active body{overflow:hidden}
+.lecture{position:fixed;inset:0;z-index:950;background:#3a3f3c}
+.lc-scene{position:absolute;inset:0;display:flex;flex-direction:column}
+.lc-scene.pivote{inset:auto;top:0;left:0;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%)}
+.lc-barre{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 8px) 10px 8px;background:rgba(20,30,25,.82);color:#fff;transition:opacity .3s,transform .3s}
+.lecture.calme .lc-barre{opacity:0;transform:translateY(-100%);pointer-events:none}
+.lc-barre button{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:8px;height:38px;min-width:42px;padding:0 10px;font:600 15px Inter,system-ui,sans-serif;cursor:pointer}
+.lc-barre button:disabled{opacity:.35}
+.lc-quitter{font-size:18px!important}
+.lc-titre{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;opacity:.9}
+.lc-taille{display:flex;gap:6px}
+.lc-defile{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top,0px) + 62px) 8px 40px}
+.lc-pages .fiche{margin:0 auto 12px;box-shadow:0 4px 18px rgba(0,0,0,.35);border:0}
+.lc-conseil{position:absolute;left:12px;right:12px;bottom:calc(var(--sab) + 14px);margin:0;padding:10px 14px;border-radius:10px;background:rgba(20,30,25,.9);color:#fff;font-size:14px;text-align:center}
+@media print{.lecture{display:none!important}}

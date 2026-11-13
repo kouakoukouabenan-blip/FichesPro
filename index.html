@@ -208,6 +208,7 @@
     <div class="fiche-actions">
       <button type="button" id="btn-telecharger" class="principal">Télécharger</button>
       <button id="partager" class="secondaire">Partager</button>
+      <button type="button" id="btn-lecture" class="secondaire carre" aria-label="Mode lecture" title="Mode lecture (plein écran)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button type="button" id="btn-plus" class="secondaire carre" aria-label="Plus d'options">⋯</button>
     </div>
     <p id="bandeau-traces" class="bandeau-traces" hidden>Traces écrites seules · <button type="button" id="quitter-traces" class="lien-action">Revenir à la fiche complète</button></p>
@@ -225,6 +226,7 @@
     <dialog id="dlg-plus" class="feuille-actions">
       <form method="dialog">
         <h3>Options de la fiche</h3>
+        <button type="button" id="lecture-ligne" class="ligne-action"><b>Mode lecture</b><span>la fiche en plein écran, dans le sens de la page</span></button>
         <button type="button" id="voir-traces" class="ligne-action bascule" aria-pressed="false"><b>Traces écrites seules</b><span>afficher et imprimer uniquement les traces écrites</span></button>
         <button type="button" id="bouton-eleves" class="ligne-action"><b>Page élèves</b><span>texte-support et situations à photocopier</span></button>
         <div class="ligne-reglage"><span>Taille du texte à l'écran</span>
@@ -477,6 +479,7 @@ Remplace la situation d'apprentissage par une situation en milieu rural…"></te
 <script src="js/regles.js"></script>
 <script src="js/profil.js"></script>
 <script src="js/app.js"></script>
+<script src="js/lecture.js"></script>
 <script src="js/eleves.js"></script>
 <script>ELEVES.init();</script>
 <script src="js/plan.js"></script>

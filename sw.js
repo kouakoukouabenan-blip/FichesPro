@@ -1,6 +1,6 @@
 /* Change VERSION à chaque mise à jour (base ou code) pour que les appareils récupèrent la nouvelle version */
-const VERSION = "fiches-v31";
-const FICHIERS = ["./", "index.html", "css/style.css", "js/api.js", "js/regles.js", "js/profil.js", "js/app.js", "js/eleves.js", "js/voile.js", "js/export.js", "js/plan.js", "js/stockage.js", "js/devoir.js", "js/annee.js", "js/semaine.js", "js/scanner.js", "js/mesdocs.js", "js/drive.js", "manifest.json",
+const VERSION = "fiches-v32";
+const FICHIERS = ["./", "index.html", "css/style.css", "js/api.js", "js/regles.js", "js/profil.js", "js/app.js", "js/eleves.js", "js/lecture.js", "js/voile.js", "js/export.js", "js/plan.js", "js/stockage.js", "js/devoir.js", "js/annee.js", "js/semaine.js", "js/scanner.js", "js/mesdocs.js", "js/drive.js", "manifest.json",
   "base/_registre.js", "base/francais-config.js", "base/francais-progressions.js", "base/francais-guides.js",
   "base/francais-fiches-3e.js", "base/francais-fiches-6e.js", "base/francais-fiches-5e.js", "base/francais-fiches-4e.js", "base/francais-programmes.js", "base/francais-exercices.js", "base/francais-modeles.js",
   "base/edhc-config.js", "base/edhc-progressions.js", "base/edhc-fiches.js", "base/edhc-guides.js", "base/edhc-supports.js", "base/edhc-manuels.js", "base/mes-documents.js", "base/calendrier.js",
