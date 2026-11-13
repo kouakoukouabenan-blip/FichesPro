@@ -100,7 +100,7 @@ puis une ligne `<script src="base/…"></script>` dans `index.html`
 
 Glisse le dossier entier sur https://app.netlify.com/drop.
 Après chaque ajout de documents : change `VERSION` dans `sw.js`
-(`fiches-v34` → `fiches-v35`…) puis redéploie, pour que les téléphones
+(`fiches-v35` → `fiches-v36`…) puis redéploie, pour que les téléphones
 récupèrent la nouvelle base.
 
 ## 5. Règles envoyées à l'IA (`js/regles.js`)

@@ -1154,3 +1154,43 @@ function demarrer() {
   ouvrir(sansCle || !PROFIL.complet() ? "reglages" : (["semaine", "nouvelle", "annee", "historique", "base", "reglages"].includes(vueDemandee) ? vueDemandee : "semaine"));
 }
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js");
+
+/* ---------- Clavier du téléphone : la zone de saisie reste visible au-dessus du clavier ----------
+   - la page se réduit quand le clavier s'ouvre (meta viewport interactive-widget) ;
+   - la barre de navigation du bas se cache pendant la saisie ;
+   - le champ actif (et la ligne où l'on écrit) est ramené au-dessus du clavier. */
+(() => {
+  const vv = window.visualViewport;
+  const saisie = el => el && (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && !/^(checkbox|radio|button|submit|file|range|color)$/i.test(el.type)) || el.isContentEditable);
+  let attente = null; const hRef = { sens: "", h: 0 };
+  function ramener() {
+    const el = document.activeElement;
+    if (!saisie(el) || el.closest("dialog,.scanner,.lecture")) return;
+    const haut = vv ? vv.offsetTop : 0, bas = vv ? vv.offsetTop + vv.height : innerHeight;
+    const r = el.getBoundingClientRect();
+    // pour une zone de texte haute : on vise la ligne du curseur (approximée par le bas du champ si le curseur est à la fin)
+    let cible = r.bottom;
+    if (el.tagName === "TEXTAREA" && el.selectionEnd < el.value.length - 1) {
+      const lignes = el.value.slice(0, el.selectionEnd).split("\n").length;
+      const lh = parseFloat(getComputedStyle(el).lineHeight) || 22;
+      cible = Math.min(r.bottom, r.top + 12 + lignes * lh - el.scrollTop + lh);
+    }
+    const marge = 16;
+    if (cible > bas - marge) scrollBy({ top: cible - (bas - marge), behavior: "smooth" });
+    else if (r.top < haut + marge) scrollBy({ top: r.top - haut - marge, behavior: "smooth" });
+  }
+  const plusTard = () => { clearTimeout(attente); attente = setTimeout(ramener, 120); };
+  function clavier() {
+    // hauteur de référence = la plus grande hauteur vue dans cette orientation (page sans clavier)
+    const sens = screen.orientation?.type || (screen.width > screen.height ? "p" : "v"), h = vv ? vv.height : innerHeight;
+    if (sens !== hRef.sens) { hRef.sens = sens; hRef.h = 0; }
+    hRef.h = Math.max(hRef.h, h);
+    const ouvert = h < hRef.h * 0.8;
+    document.documentElement.classList.toggle("clavier-ouvert", ouvert && saisie(document.activeElement));
+  }
+  document.addEventListener("focusin", e => { if (saisie(e.target)) { clavier(); setTimeout(ramener, 350); } });
+  document.addEventListener("focusout", () => setTimeout(clavier, 100));
+  document.addEventListener("input", e => { if (saisie(e.target)) plusTard(); });
+  if (vv) vv.addEventListener("resize", () => { clavier(); plusTard(); });
+  clavier();
+})();

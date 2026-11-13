@@ -558,3 +558,9 @@ html.lecture-active,html.lecture-active body{overflow:hidden}
 @keyframes pulse-micro{0%,100%{box-shadow:0 0 0 0 rgba(179,38,30,.45)}50%{box-shadow:0 0 0 8px rgba(179,38,30,0)}}
 @media print{.bandeau-controle,.suite-eval,.dictee-micro{display:none!important}}
 .choix-boutons>:only-child{grid-column:1/-1}
+
+/* Clavier ouvert : la navigation du bas s'efface pour laisser la place à la saisie */
+@media (max-width:760px){
+  html.clavier-ouvert .navigation{display:none}
+  html.clavier-ouvert main{padding-bottom:45vh!important}
+}
