@@ -745,6 +745,7 @@ function ficheExistante(req) {
 }
 function demanderDoublon(req, f) {
   const dlg = $("#dlg-doublon"), devoir = req.genre === "devoir";
+  if (dlg.parentElement !== document.body) document.body.appendChild(dlg);   // visible depuis n'importe quelle vue
   $("#doublon-texte").textContent = `${devoir ? "Un devoir" : "Une fiche"} « ${f.req.titre} » (${devoir ? f.req.typeEval || "Devoir" : f.req.activite} · ${f.req.classe}) a déjà été préparé${devoir ? "" : "e"} le ${new Date(f.date).toLocaleDateString("fr-FR")}.`;
   $("#doublon-corriger").textContent = devoir ? "Modifier le devoir existant" : "Modifier la fiche existante";
   $("#doublon-ouvrir").textContent = devoir ? "Ouvrir le devoir existant" : "Ouvrir la fiche existante";
