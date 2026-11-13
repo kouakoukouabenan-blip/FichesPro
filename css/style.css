@@ -564,3 +564,5 @@ html.lecture-active,html.lecture-active body{overflow:hidden}
   html.clavier-ouvert .navigation{display:none}
   html.clavier-ouvert main{padding-bottom:45vh!important}
 }
+.doublon-choix{display:grid;gap:10px;margin:6px 0 4px}
+.doublon-choix button{width:100%}

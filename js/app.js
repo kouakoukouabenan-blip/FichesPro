@@ -708,7 +708,46 @@ async function produireFiche(req, onEtat) {
   ELEVES.auto(fiche);                      // page à photocopier, si la case est cochée
   return { fiche, docs };
 }
-async function generer(req) {
+/* ---------- Fiche déjà préparée ? ----------
+   Même matière, même classe, même activité (ou même type de devoir) et même leçon (titre identique
+   ou presque), ou même séance de la progression : on le signale avant de relancer la rédaction. */
+const motsTitre = t => new Set(norm(t).replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(m => m.length > 2 && !/^(les|des|une|dans|pour|sur|par|avec|leur|aux|lecon|seance)$/.test(m)));
+function ficheExistante(req) {
+  const genre = req.genre === "devoir" ? "devoir" : "fiche";
+  const a = motsTitre(req.titre);
+  return HISTO.find(f => {
+    if ((f.genre || "fiche") !== genre || f.req.matiere !== req.matiere || f.req.classe !== req.classe) return false;
+    if (genre === "fiche" && f.req.activite !== req.activite) return false;
+    if (genre === "devoir" && (f.req.typeEval || "") !== (req.typeEval || "")) return false;
+    if (req.planId && f.req.planId === req.planId) return true;
+    if (genre === "devoir" && req.ficheSource && f.req.ficheSource === req.ficheSource) return true;
+    if (norm(f.req.titre) === norm(req.titre)) return true;
+    const b = motsTitre(f.req.titre);
+    if (!a.size || !b.size) return false;
+    const communs = [...a].filter(m => b.has(m)).length;
+    return communs / Math.max(a.size, b.size) >= 0.8;
+  }) || null;
+}
+function demanderDoublon(req, f) {
+  const dlg = $("#dlg-doublon"), devoir = req.genre === "devoir";
+  $("#doublon-texte").textContent = `${devoir ? "Un devoir" : "Une fiche"} « ${f.req.titre} » (${devoir ? f.req.typeEval || "Devoir" : f.req.activite} · ${f.req.classe}) a déjà été préparé${devoir ? "" : "e"} le ${new Date(f.date).toLocaleDateString("fr-FR")}.`;
+  $("#doublon-corriger").textContent = devoir ? "Modifier le devoir existant" : "Modifier la fiche existante";
+  $("#doublon-ouvrir").textContent = devoir ? "Ouvrir le devoir existant" : "Ouvrir la fiche existante";
+  $("#doublon-remplacer").textContent = devoir ? "Remplacer par un nouveau devoir" : "Remplacer par une nouvelle fiche";
+  dlg.querySelector("h3").textContent = devoir ? "Déjà préparé" : "Déjà préparée";
+  $("#doublon-ouvrir").onclick = () => { dlg.close(); afficherFiche(f); };
+  $("#doublon-corriger").onclick = () => {
+    dlg.close(); afficherFiche(f);
+    const z = $("#retouche-texte");
+    if (req.consignes && !z.value.trim()) { z.value = req.consignes; z.dispatchEvent(new Event("input")); }
+    setTimeout(() => { z.scrollIntoView({ behavior: "smooth", block: "center" }); z.focus(); }, 250);
+  };
+  $("#doublon-remplacer").onclick = () => { dlg.close(); generer(req, { remplace: f.id }); };
+  $("#doublon-garder").onclick = () => { dlg.close(); generer(req, { force: true }); };
+  dlg.showModal();
+}
+async function generer(req, o = {}) {
+  if (!o.force && !o.remplace) { const f = ficheExistante(req); if (f) return demanderDoublon(req, f); }
   LS.set("fc_dernier", req);
   const devoir = req.genre === "devoir";
   const bouton = $("#generer"); bouton.disabled = true;
@@ -721,6 +760,7 @@ async function generer(req) {
   try {
     const { fiche } = await produireFiche(req, t => { $("#etat-texte").textContent = t; VOILE.etat(t); });
     VOILE.fermer();
+    if (o.remplace) supprimerFiche(o.remplace);        // l'ancienne version laisse la place à la nouvelle
     afficherFiche(fiche);
     viderFormulaire();                       // la prochaine fiche part d'un formulaire propre
   } catch (err) {
