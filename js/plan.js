@@ -30,6 +30,7 @@ Réponds UNIQUEMENT par un tableau JSON, sans texte autour et sans bloc \`\`\` :
 function planAvecCommentaires(lignes) {
   const lib = etiquettesPlan(lignes);
   return lignes.map((l, i) => (l.n === 2 ? "    " : "") + lib[i] + " " + l.t.trim() +
+    (l.c ? `\n${l.n === 2 ? "    " : ""}   ↳ CONTENU SOUHAITÉ PAR LE PROFESSEUR : ${l.c.replace(/\s*\n\s*/g, " ; ")}` : "") +
     (l.commentaire ? `\n${l.n === 2 ? "    " : ""}   ↳ COMMENTAIRE DU PROFESSEUR : ${l.commentaire}` : "")).join("\n");
 }
 function demandePlan(req, docs, lignes, general) {
@@ -219,18 +220,23 @@ function commentairesEnTexte(lignes, general) {
   if (general) out.push("- Remarque générale : " + general);
   return out.join("\n");
 }
+function contenuDe(titre) {
+  const cle = norm(titre).replace(/[^a-z0-9 ]/g, "").trim();
+  return (planEnCours?.req.plan || []).find(p => p.c && norm(p.t).replace(/[^a-z0-9 ]/g, "").trim() === cle)?.c || "";
+}
 function validerEtGenerer() {
   if (!planEnCours || !$("#pv-valide").checked) return;
   const lignes = lirePlanValide(), general = $("#pv-general").value.trim();
   if (!lignes.length) return;
   const req = {
     ...planEnCours.req,
-    plan: lignes.map(({ n, t }) => ({ n, t: t.trim() })),
+    // le contenu souhaité écrit dans « Mon plan » suit son titre (même intitulé) dans le plan validé
+    plan: lignes.map(({ n, t }) => { const c = contenuDe(t); return c ? { n, t: t.trim(), c } : { n, t: t.trim() }; }),
     commentairesPlan: commentairesEnTexte(lignes, general)
   };
   // Le plan validé est recopié dans le formulaire : il reste disponible si la génération échoue ou pour « Régénérer »
   $("#plan-liste").innerHTML = "";
-  req.plan.forEach(p => ajouterLignePlan(p.n, p.t, null, false));
+  req.plan.forEach(p => ajouterLignePlan(p.n, p.t, null, false, p.c || ""));
   $("#bloc-plan").open = true;
   generer(req);
 }

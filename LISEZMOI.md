@@ -100,7 +100,7 @@ puis une ligne `<script src="base/…"></script>` dans `index.html`
 
 Glisse le dossier entier sur https://app.netlify.com/drop.
 Après chaque ajout de documents : change `VERSION` dans `sw.js`
-(`fiches-v36` → `fiches-v37`…) puis redéploie, pour que les téléphones
+(`fiches-v37` → `fiches-v38`…) puis redéploie, pour que les téléphones
 récupèrent la nouvelle base.
 
 ## 5. Règles envoyées à l'IA (`js/regles.js`)
@@ -137,6 +137,7 @@ Lecture méthodique : l'hypothèse générale suit la forme « type + tonalité 
 - **Traces écrites** : colonne élargie (32 %), titres en vert, sous-titres en ocre, règles encadrées, exemples en bleu, remarques en prune. La mise en forme est appliquée automatiquement, même si l'IA l'oublie.
 - **Word** télécharge un vrai fichier `.docx` et **PDF** un vrai fichier `.pdf`. En mode paysage, la **page elle-même** est en A4 paysage (29,7 × 21 cm), avec les couleurs conservées. Les bibliothèques d'export (dossier `vendor/`) se chargent au premier export.
 - **Traces écrites** : n'affiche que les traces écrites de la fiche (la colonne du déroulement, ou les rubriques « Trace écrite », « Résumé », « Retenons »), à la suite, en portrait. Word, PDF, Partager, Imprimer et Copier portent alors sur les traces seules. **Fiche complète** revient à la fiche.
+- **Mon plan — contenu souhaité** : le bouton ✎ de chaque titre ou sous-titre ouvre une zone pour dire ce que la partie doit contenir (ex. « Tableau des pronoms sujet, COD, COI avec personne et nombre ; trois exemples »). Ce contenu est transmis avec le plan et développé dans le déroulement et les traces écrites ; il suit aussi le plan quand tu passes par « Me proposer un plan à valider d'abord ».
 - **Fiche déjà préparée** : si la même leçon (même matière, classe, activité et titre, ou même séance de la progression) a déjà une fiche, l'appli le signale avant de rédiger et propose : ouvrir la fiche existante, la modifier (la demande de modification s'ouvre, avec tes remarques), la remplacer par une nouvelle, ou garder les deux. Même chose pour un devoir du même type sur la même leçon.
 - **Dictée vocale** : un micro dans les zones de texte (remarques, remarques permanentes, texte support, demande de modification). Touche le micro, parle, touche-le de nouveau pour arrêter. Dis « virgule », « point », « à la ligne », « point à la ligne », « deux points », « point d'interrogation »… pour la ponctuation. Il faut une connexion et autoriser le micro.
 - **Évaluer cette leçon** (bouton sous la fiche, ou ⋯) : interrogation écrite, situation d'évaluation, exercices de remédiation ou devoir surveillé, construits à partir des habiletés, des contenus et des traces écrites de la fiche (et de son texte support si tu le souhaites), avec corrigé et barème. Barème et durée se proposent selon le type.

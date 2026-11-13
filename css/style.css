@@ -566,3 +566,15 @@ html.lecture-active,html.lecture-active body{overflow:hidden}
 }
 .doublon-choix{display:grid;gap:10px;margin:6px 0 4px}
 .doublon-choix button{width:100%}
+
+/* Mon plan : contenu souhaité sous chaque titre */
+.plan-liste li.plan-ligne{flex-wrap:wrap}
+.plan-liste .plan-contenu{flex:1 1 100%;margin-left:34px;min-height:58px;font-size:14.5px;line-height:1.4;background:#fffdf6}
+.plan-liste li.n2 .plan-contenu{margin-left:34px}
+.plan-liste li.avec-contenu .plan-bt-contenu{background:var(--vert-pale);border-color:var(--vert-clair);color:var(--vert)}
+@media (max-width:640px){
+  .plan-liste li.plan-ligne{row-gap:6px}
+  .plan-liste li.plan-ligne>input{flex:1 1 calc(100% - 40px)}
+  .plan-liste li.plan-ligne>.plan-bt-contenu{margin-left:34px}
+  .plan-liste li.plan-ligne>button{height:34px}
+}
