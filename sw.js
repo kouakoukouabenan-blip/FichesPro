@@ -1,5 +1,5 @@
 /* Change VERSION à chaque mise à jour (base ou code) pour que les appareils récupèrent la nouvelle version */
-const VERSION = "fiches-v38";
+const VERSION = "fiches-v39";
 const FICHIERS = ["./", "index.html", "css/style.css", "js/api.js", "js/regles.js", "js/profil.js", "js/controle.js", "js/app.js", "js/dictee.js", "js/eleves.js", "js/lecture.js", "js/voile.js", "js/export.js", "js/plan.js", "js/stockage.js", "js/devoir.js", "js/annee.js", "js/semaine.js", "js/scanner.js", "js/mesdocs.js", "js/drive.js", "manifest.json",
   "base/_registre.js", "base/francais-config.js", "base/francais-progressions.js", "base/francais-guides.js",
   "base/francais-fiches-3e.js", "base/francais-fiches-6e.js", "base/francais-fiches-5e.js", "base/francais-fiches-4e.js", "base/francais-programmes.js", "base/francais-exercices.js", "base/francais-modeles.js",
