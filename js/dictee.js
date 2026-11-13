@@ -41,38 +41,70 @@ const DICTEE = (() => {
     champ.dispatchEvent(new Event("input", { bubbles: true }));
   }
 
+  /* Une phrase à la fois (continuous = false), relancée automatiquement tant que le micro est actif.
+     Sur Android, le mode continu renvoie chaque morceau en double (« il vous reste il vous reste 13… ») :
+     ici, le texte en cours est REMPLACÉ à chaque résultat, jamais ajouté. */
+  let actif = false, silences = 0;
+  // fusion des morceaux d'un même résultat : un morceau qui reprend le précédent le remplace
+  function fusion(morceaux) {
+    let t = "";
+    for (const m of morceaux.map(x => x.trim()).filter(Boolean)) {
+      if (!t || n(m).startsWith(n(t))) t = m;
+      else if (!n(t).endsWith(n(m))) t += " " + m;
+    }
+    return t;
+  }
+  const n = s => s.toLowerCase().replace(/\s+/g, " ").trim();
+  function ajouterAcquis(t) {
+    t = t.trim(); if (!t) return;
+    const a = n(acquis), x = n(t);
+    if (a.endsWith(x)) return;                       // déjà écrit (doublon)
+    acquis = (acquis + " " + t).trim();
+  }
+
   function arreter() {
+    actif = false;
     if (reco) { try { reco.stop(); } catch {} }
   }
   function fin() {
+    actif = false;
     bouton?.classList.remove("ecoute"); bouton?.setAttribute("aria-pressed", "false");
     if (champ) champ.dispatchEvent(new Event("change", { bubbles: true }));
     reco = null; champ = null; bouton = null;
+  }
+  function ecouter() {
+    reco = new Reco();
+    reco.lang = "fr-FR"; reco.continuous = false; reco.interimResults = true; reco.maxAlternatives = 1;
+    let enCours = "", entendu = false;
+    reco.onresult = e => {
+      entendu = true; silences = 0;
+      const res = [...e.results];
+      const texte = fusion(res.map(r => r[0].transcript));
+      if (res.length && res[res.length - 1].isFinal) { ajouterAcquis(texte); enCours = ""; }
+      else enCours = texte;
+      ecrire((acquis + " " + enCours).trim());
+    };
+    reco.onerror = e => {
+      if (e.error === "not-allowed" || e.error === "service-not-allowed") { actif = false; alert("Autorise l'accès au micro pour cette appli (icône du cadenas à côté de l'adresse, ou réglages du téléphone), puis réessaie."); }
+      else if (e.error === "network") { actif = false; alert("La dictée a besoin d'une connexion internet."); }
+      else if (e.error !== "no-speech" && e.error !== "aborted") console.warn("Dictée :", e.error);
+    };
+    reco.onend = () => {
+      if (enCours) { ajouterAcquis(enCours); enCours = ""; ecrire(acquis); }
+      if (!entendu) silences++;
+      // phrase terminée : on relance tant que le professeur n'a pas arrêté (arrêt après ~3 silences)
+      if (actif && silences < 3) { try { ecouter(); return; } catch {} }
+      fin();
+    };
+    reco.start();
   }
   function demarrer(c, b) {
     if (reco) { const meme = champ === c; arreter(); if (meme) return; }
     if (navigator.onLine === false) return alert("La dictée a besoin d'une connexion internet.");
     champ = c; bouton = b;
     const debut = c.selectionStart ?? c.value.length, finSel = c.selectionEnd ?? debut;
-    avant = c.value.slice(0, debut); apres = c.value.slice(finSel); acquis = "";
-    reco = new Reco();
-    reco.lang = "fr-FR"; reco.continuous = true; reco.interimResults = true;
-    reco.onresult = e => {
-      let provisoire = "";
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        const r = e.results[i];
-        if (r.isFinal) acquis += " " + r[0].transcript.trim();
-        else provisoire += " " + r[0].transcript.trim();
-      }
-      ecrire((acquis + provisoire).trim());
-    };
-    reco.onerror = e => {
-      if (e.error === "not-allowed" || e.error === "service-not-allowed") alert("Autorise l'accès au micro pour cette appli (icône du cadenas à côté de l'adresse, ou réglages du téléphone), puis réessaie.");
-      else if (e.error === "network") alert("La dictée a besoin d'une connexion internet.");
-      else if (e.error !== "no-speech" && e.error !== "aborted") console.warn("Dictée :", e.error);
-    };
-    reco.onend = fin;
-    try { reco.start(); } catch (err) { fin(); return; }
+    avant = c.value.slice(0, debut); apres = c.value.slice(finSel); acquis = ""; silences = 0; actif = true;
+    try { ecouter(); } catch (err) { fin(); return; }
     b.classList.add("ecoute"); b.setAttribute("aria-pressed", "true");
     c.focus();
   }
