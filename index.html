@@ -211,6 +211,7 @@
       <button type="button" id="btn-lecture" class="secondaire carre" aria-label="Mode lecture" title="Mode lecture (plein écran)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button type="button" id="btn-plus" class="secondaire carre" aria-label="Plus d'options">⋯</button>
     </div>
+    <p id="bandeau-controle" class="bandeau-controle" hidden></p>
     <p id="bandeau-traces" class="bandeau-traces" hidden>Traces écrites seules · <button type="button" id="quitter-traces" class="lien-action">Revenir à la fiche complète</button></p>
 
     <dialog id="dlg-telecharger" class="feuille-actions">
@@ -227,6 +228,7 @@
       <form method="dialog">
         <h3>Options de la fiche</h3>
         <button type="button" id="lecture-ligne" class="ligne-action"><b>Mode lecture</b><span>la fiche en plein écran, dans le sens de la page</span></button>
+        <button type="button" id="eval-ligne" class="ligne-action"><b>Évaluer cette leçon</b><span>interrogation ou situation d'évaluation, avec corrigé et barème</span></button>
         <button type="button" id="voir-traces" class="ligne-action bascule" aria-pressed="false"><b>Traces écrites seules</b><span>afficher et imprimer uniquement les traces écrites</span></button>
         <button type="button" id="bouton-eleves" class="ligne-action"><b>Page élèves</b><span>texte-support et situations à photocopier</span></button>
         <div class="ligne-reglage"><span>Taille du texte à l'écran</span>
@@ -244,6 +246,31 @@
         </div>
         <button type="button" id="copier" class="ligne-action"><b>Copier</b><span>coller le texte dans un autre document</span></button>
         <button type="button" id="regenerer" class="ligne-action"><b>Refaire la fiche</b><span>une nouvelle version, avec les mêmes informations</span></button>
+        <button value="" class="lien-annuler">Fermer</button>
+      </form>
+    </dialog>
+    <dialog id="dlg-eval" class="choix-format">
+      <form method="dialog">
+        <h3>Évaluer cette leçon</h3>
+        <p class="meta" id="eval-titre-lecon"></p>
+        <p class="meta">Le sujet porte exactement sur les habiletés, les contenus et les traces écrites de la fiche. Il est suivi du corrigé et du barème.</p>
+        <label>Type d'évaluation
+          <select id="eval-type">
+            <option selected>Interrogation écrite</option>
+            <option>Situation d'évaluation (APC)</option>
+            <option>Exercices de remédiation / d'entraînement</option>
+            <option>Devoir surveillé</option>
+          </select>
+        </label>
+        <div class="grille2">
+          <label>Barème (sur)<input id="eval-bareme" inputmode="decimal" value="10"></label>
+          <label>Durée<input id="eval-duree" value="30 min"></label>
+        </div>
+        <label class="valider"><input type="checkbox" id="eval-support" checked><span>Reprendre le texte support de la fiche (s'il y en a un)</span></label>
+        <label>Remarques (facultatif)<textarea id="eval-consignes" rows="2" placeholder="Ex. : 5 questions courtes, une question de production…"></textarea></label>
+        <div class="choix-boutons">
+          <button type="button" id="eval-lancer" class="principal">Préparer l'évaluation</button>
+        </div>
         <button value="" class="lien-annuler">Fermer</button>
       </form>
     </dialog>
@@ -292,6 +319,7 @@
     </dialog>
     <div id="etat-retouche" class="etat" hidden><span class="rond"></span><span>Modification en cours…</span></div>
     <div class="feuille-cadre"><article id="fiche" class="fiche portrait" contenteditable="true" spellcheck="true"></article><article id="traces" class="fiche portrait traces" hidden></article><article id="eleves" class="fiche portrait page-eleves" contenteditable="true" spellcheck="true" hidden></article></div>
+    <button type="button" id="suite-eval" class="secondaire suite-eval">Évaluer cette leçon : interrogation avec corrigé</button>
     <form id="retouche" class="retouche">
       <label for="retouche-texte">Demander une modification</label>
       <textarea id="retouche-texte" rows="4" placeholder="Ex. : ajoute un exercice d'application sur le COD.
@@ -478,6 +506,7 @@ Remplace la situation d'apprentissage par une situation en milieu rural…"></te
 <script src="js/export.js"></script>
 <script src="js/regles.js"></script>
 <script src="js/profil.js"></script>
+<script src="js/controle.js"></script>
 <script src="js/app.js"></script>
 <script src="js/lecture.js"></script>
 <script src="js/eleves.js"></script>
@@ -488,6 +517,7 @@ Remplace la situation d'apprentissage par une situation en milieu rural…"></te
 <script src="js/semaine.js"></script>
 <script src="js/scanner.js"></script>
 <script src="js/mesdocs.js"></script>
+<script src="js/dictee.js"></script>
 <script src="js/drive.js"></script>
 <script>PROFIL.init(); SEMAINE.init(); demarrer();</script>
 </body>

@@ -697,6 +697,13 @@ async function produireFiche(req, onEtat) {
   const { systeme, demande, opts } = devoir ? DEVOIR.construire(req, docs) : construirePrompt(req, docs);
   const brut = await API.generer(systeme, demande, onEtat);
   const fiche = { id: Date.now(), date: new Date().toISOString(), req, genre: devoir ? "devoir" : "fiche", orientation: req.orientation, html: preparerFiche(brut), sources: docs.map(d => d.titre), opts };
+  // contrôle de conformité ; s'il manque quelque chose, une demande de complément (controle.js)
+  let manques = CONTROLE.verifier(fiche.html, req, fiche.genre);
+  if (manques.length) {
+    onEtat && onEtat("Vérification de la fiche…");
+    try { const r = await CONTROLE.corriger(fiche, manques, onEtat); fiche.html = r.html; manques = r.reste; fiche.complete = true; }
+    catch (err) { console.warn("Complément impossible :", err); }
+  }
   sauverHistorique(fiche);
   ELEVES.auto(fiche);                      // page à photocopier, si la case est cochée
   return { fiche, docs };
@@ -775,9 +782,77 @@ function afficherFiche(f) {
   $("#fiche").innerHTML = f.html;
   afficherTraces(false);
   ELEVES.afficher(f);
+  majControle();
+  $("#suite-eval").hidden = f.genre === "devoir";
+  $("#eval-ligne").hidden = f.genre === "devoir";
   ouvrir("fiche");
   appliquerOrientation(f.orientation || f.req.orientation);
 }
+
+/* ---------- Contrôle de conformité affiché sous les boutons de la fiche ---------- */
+function majControle() {
+  const f = ficheCourante, b = $("#bandeau-controle");
+  if (!f) return;
+  const manques = CONTROLE.verifier(f.html, f.req, f.genre);
+  b.classList.toggle("ok", !manques.length);
+  b.hidden = false;
+  b.innerHTML = manques.length
+    ? `<strong>À vérifier :</strong> ${manques.map(x => esc(x.libelle)).join(" · ")} <button type="button" class="lien-action" id="completer-fiche">Compléter automatiquement</button>`
+    : `${f.genre === "devoir" ? "Devoir vérifié : corrigé, total des points et en-tête conformes." : "Fiche vérifiée : rubriques et exigences de l'activité présentes."}`;
+  const btn = $("#completer-fiche");
+  if (btn) btn.onclick = async () => {
+    btn.disabled = true;
+    VOILE.ouvrir({ titre: "Complément de la fiche…" });
+    try {
+      const r = await CONTROLE.corriger(f, manques, () => {});
+      if (r.html === f.html) signaler("Rien de plus n'a pu être complété : vérifie ces points à la main.");
+      else { f.html = r.html; sauverHistorique(f); $("#fiche").innerHTML = f.html; if (modeTraces) afficherTraces(true); signaler("Fiche complétée"); }
+    } catch (err) { alert("Le complément n'a pas abouti.\n\n" + err.message); }
+    finally { VOILE.fermer(); majControle(); }
+  };
+}
+
+/* ---------- Évaluation de la leçon à partir de la fiche ---------- */
+// texte brut d'un fragment HTML ; tableaux en « cellule | cellule »
+function texteBrut(html) {
+  const d = document.createElement("div"); d.innerHTML = html;
+  d.querySelectorAll("tr").forEach(tr => { tr.textContent = [...tr.cells].map(c => c.textContent.replace(/\s+/g, " ").trim()).join(" | ") + "\n"; });
+  d.querySelectorAll("p,li,h1,h2,h3,br").forEach(e => e.after("\n"));
+  return d.textContent.replace(/[ \t]+/g, " ").replace(/\n\s*\n+/g, "\n").trim();
+}
+function contenuLecon(f) {
+  const d = document.createElement("div"); d.innerHTML = f.html;
+  const parts = [];
+  const hab = [...d.querySelectorAll("table")].find(t => /habilet/i.test(t.textContent));
+  if (hab) parts.push("HABILETÉS ET CONTENUS\n" + texteBrut(hab.outerHTML));
+  const traces = extraireTraces(d);
+  if (traces.length) parts.push("TRACES ÉCRITES DE LA LEÇON\n" + texteBrut(traces.join("\n")));
+  if (!parts.length) parts.push(texteBrut(f.html));
+  return parts.join("\n\n").slice(0, 9000);
+}
+function ouvrirEvaluation() {
+  const f = ficheCourante; if (!f || f.genre === "devoir") return;
+  const dlg = $("#dlg-eval");
+  $("#eval-titre-lecon").textContent = f.req.titre;
+  dlg.showModal();
+}
+function lancerEvaluation() {
+  const f = ficheCourante, type = $("#eval-type").value;
+  const req = { ...f.req, genre: "devoir", typeEval: type, bareme: $("#eval-bareme").value.trim() || "20", duree: $("#eval-duree").value.trim(),
+    modeleId: "", plan: [], planId: "", consignes: $("#eval-consignes").value.trim(), contenuLecon: contenuLecon(f), ficheSource: f.id,
+    consignesPermanentes: (API.reglages().consignesPermanentes || "").trim() };
+  if (!$("#eval-support").checked) { req.texteSupport = ""; req.supportSource = ""; }
+  $("#dlg-eval").close();
+  generer(req);
+}
+$("#eval-type").addEventListener("change", e => {
+  const t = e.target.value;
+  $("#eval-bareme").value = /interrogation|remédiation/i.test(t) ? "10" : "20";
+  $("#eval-duree").value = /interrogation/i.test(t) ? "30 min" : /remédiation/i.test(t) ? "45 min" : /situation/i.test(t) ? "45 min" : "2 h";
+});
+$("#suite-eval").onclick = ouvrirEvaluation;
+$("#eval-ligne").onclick = () => { $("#dlg-plus").close(); ouvrirEvaluation(); };
+$("#eval-lancer").onclick = lancerEvaluation;
 
 /* Retouche de la fiche par une consigne */
 /* Zone de modification : plusieurs lignes, Entrée = retour à la ligne, la zone s'agrandit avec le texte
@@ -811,6 +886,7 @@ Applique la consigne et renvoie la fiche COMPLÈTE modifiée (toutes les rubriqu
     if (modeTraces) afficherTraces(true);
     if (ficheCourante.eleves) { ficheCourante.eleves.html = ELEVES.construire(ficheCourante, ficheCourante.eleves.choix, ficheCourante.eleves.copies, ficheCourante.eleves.groupe).html; sauverHistorique(ficheCourante); ELEVES.afficher(ficheCourante); }
     $("#retouche-texte").value = ""; $("#retouche-texte").style.height = "";
+    majControle();
     signaler("Fiche modifiée");
   } catch (err) {
     VOILE.fermer();

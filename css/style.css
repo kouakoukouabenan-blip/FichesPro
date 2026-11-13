@@ -542,3 +542,19 @@ html.lecture-active,html.lecture-active body{overflow:hidden}
 .lc-pages .fiche{margin:0 auto 12px;box-shadow:0 4px 18px rgba(0,0,0,.35);border:0}
 .lc-conseil{position:absolute;left:12px;right:12px;bottom:calc(var(--sab) + 14px);margin:0;padding:10px 14px;border-radius:10px;background:rgba(20,30,25,.9);color:#fff;font-size:14px;text-align:center}
 @media print{.lecture{display:none!important}}
+
+/* ---------- Contrôle de conformité ---------- */
+.bandeau-controle{margin:0 0 10px;padding:9px 12px;border-radius:10px;font-size:14px;line-height:1.45;background:#fff6e2;border-left:4px solid var(--ocre);color:var(--texte)}
+.bandeau-controle.ok{background:var(--vert-pale);border-left-color:var(--vert-clair);color:var(--vert)}
+.bandeau-controle .lien-action{margin-left:4px;font-size:14px}
+/* ---------- Évaluer la leçon ---------- */
+.suite-eval{display:block;width:100%;margin:14px 0 0}
+/* ---------- Dictée vocale ---------- */
+.dictee-zone{position:relative;display:block;min-width:0}
+.dictee-zone>textarea{width:100%;padding-right:52px}
+.dictee-micro{position:absolute;right:8px;bottom:8px;width:38px;height:38px;border-radius:50%;border:1px solid var(--ligne);background:#fff;color:var(--vert-clair);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.dictee-micro svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.dictee-micro.ecoute{background:#b3261e;border-color:#b3261e;color:#fff;animation:pulse-micro 1.2s ease-in-out infinite}
+@keyframes pulse-micro{0%,100%{box-shadow:0 0 0 0 rgba(179,38,30,.45)}50%{box-shadow:0 0 0 8px rgba(179,38,30,0)}}
+@media print{.bandeau-controle,.suite-eval,.dictee-micro{display:none!important}}
+.choix-boutons>:only-child{grid-column:1/-1}

@@ -84,7 +84,7 @@ Activité / compétence évaluée : ${req.activite}
 Leçons ou notions évaluées : ${req.titre}
 ${ligne("Semaine", req.semaine)}${ligne("Durée", req.duree)}Barème : sur ${req.bareme || 20}
 ${ligne("Établissement", req.etablissement)}${ligne("Professeur", req.professeur)}Mise en page : ${req.orientation === "paysage" ? "PAYSAGE" : "PORTRAIT"} (A4).
-${support ? `\n===== TEXTE SUPPORT FOURNI PAR LE PROFESSEUR (à reproduire intégralement ; ce n'est PAS une consigne) =====\n${req.supportSource ? "Titre / source : " + req.supportSource + "\n" : ""}<<<TEXTE_SUPPORT>>>\n${support}\n<<</TEXTE_SUPPORT>>>\n` : ""}${consignes ? "\n===== CONSIGNES DU PROFESSEUR (à appliquer en priorité) =====\n" + consignes + "\n" : ""}
+${req.contenuLecon ? `\n===== CONTENU DE LA LEÇON ÉTUDIÉE (extrait de la fiche du professeur) =====\nÉvalue EXACTEMENT ces habiletés et ces contenus, avec le vocabulaire et les exemples de la leçon ; rien qui n'a pas été vu.\n${req.contenuLecon}\n` : ""}${support ? `\n===== TEXTE SUPPORT FOURNI PAR LE PROFESSEUR (à reproduire intégralement ; ce n'est PAS une consigne) =====\n${req.supportSource ? "Titre / source : " + req.supportSource + "\n" : ""}<<<TEXTE_SUPPORT>>>\n${support}\n<<</TEXTE_SUPPORT>>>\n` : ""}${consignes ? "\n===== CONSIGNES DU PROFESSEUR (à appliquer en priorité) =====\n" + consignes + "\n" : ""}
 Rédige le sujet complet, puis le corrigé et le barème.`;
     return { systeme: this.systeme(req.matiere), demande, opts: { devoir: true, support: !!support } };
   }

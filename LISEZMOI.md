@@ -100,7 +100,7 @@ puis une ligne `<script src="base/…"></script>` dans `index.html`
 
 Glisse le dossier entier sur https://app.netlify.com/drop.
 Après chaque ajout de documents : change `VERSION` dans `sw.js`
-(`fiches-v32` → `fiches-v33`…) puis redéploie, pour que les téléphones
+(`fiches-v33` → `fiches-v34`…) puis redéploie, pour que les téléphones
 récupèrent la nouvelle base.
 
 ## 5. Règles envoyées à l'IA (`js/regles.js`)
@@ -137,6 +137,9 @@ Lecture méthodique : l'hypothèse générale suit la forme « type + tonalité 
 - **Traces écrites** : colonne élargie (32 %), titres en vert, sous-titres en ocre, règles encadrées, exemples en bleu, remarques en prune. La mise en forme est appliquée automatiquement, même si l'IA l'oublie.
 - **Word** télécharge un vrai fichier `.docx` et **PDF** un vrai fichier `.pdf`. En mode paysage, la **page elle-même** est en A4 paysage (29,7 × 21 cm), avec les couleurs conservées. Les bibliothèques d'export (dossier `vendor/`) se chargent au premier export.
 - **Traces écrites** : n'affiche que les traces écrites de la fiche (la colonne du déroulement, ou les rubriques « Trace écrite », « Résumé », « Retenons »), à la suite, en portrait. Word, PDF, Partager, Imprimer et Copier portent alors sur les traces seules. **Fiche complète** revient à la fiche.
+- **Dictée vocale** : un micro dans les zones de texte (remarques, remarques permanentes, texte support, demande de modification). Touche le micro, parle, touche-le de nouveau pour arrêter. Dis « virgule », « point », « à la ligne », « point à la ligne », « deux points », « point d'interrogation »… pour la ponctuation. Il faut une connexion et autoriser le micro.
+- **Évaluer cette leçon** (bouton sous la fiche, ou ⋯) : interrogation écrite, situation d'évaluation, exercices de remédiation ou devoir surveillé, construits à partir des habiletés, des contenus et des traces écrites de la fiche (et de son texte support si tu le souhaites), avec corrigé et barème. Barème et durée se proposent selon le type.
+- **Contrôle automatique** : chaque fiche est vérifiée avant d'être affichée (titre, situation, tableau des habiletés, déroulement avec colonne « Traces écrites », réponses des élèves rédigées, somme des durées, évaluation, corrigé ; en lecture méthodique : hypothèse générale, deux axes, tableau de vérification en annexe, bilan ; en grammaire/orthographe : corpus P1, P2…, exercices, mini-dictée ; texte support et plan reproduits ; pour un devoir : total des points = barème, corrigé, ligne « Nom et prénoms »). S'il manque quelque chose, l'appli demande un complément puis garde la meilleure version. Un bandeau sous les boutons indique « Fiche vérifiée » ou les points à vérifier, avec « Compléter automatiquement ».
 - **Mode lecture** (bouton à quatre coins à côté de ⋯, ou ⋯ → Mode lecture) : la fiche en plein écran, sans menus. Une fiche portrait s'affiche en portrait, une fiche paysage en paysage : l'écran se verrouille dans le bon sens quand le téléphone le permet (Android) ; sinon un conseil invite à tourner le téléphone, ou « Pivoter l'affichage » tourne la page à l'écran. A− / A+ agrandissent, la barre s'efface pendant la lecture et revient au toucher. Pour quitter : ✕ ou la touche Retour du téléphone.
 - **A− / A+** : taille du texte, de 85 % à 200 %. La feuille garde sa largeur et le texte se réorganise. Le réglage ne concerne que la lecture à l'écran : Word, PDF et impression restent en taille normale. Il est retenu.
 - **Écran de génération** : sobre, avec une page qui s'écrit, « Rédaction de la fiche… » et une barre de progression. **Masquer** le referme sans arrêter la rédaction.
